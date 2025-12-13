@@ -149,7 +149,7 @@ ggplot(poly, aes(x,y, fill=id, group=id)) +
 
  
 
-- Chapter 6 of [my book](https://www.mheducation.co.uk/statistics-for-psychology-using-r-a-linear-models-perspective-9780335252626-emea-group) (available in the Library)
+- Chapter 6 of [our book](https://www.mheducation.co.uk/statistics-for-psychology-using-r-a-linear-models-perspective-9780335252626-emea-group) (available in the Library)
 
  
 
