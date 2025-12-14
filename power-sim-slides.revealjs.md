@@ -349,13 +349,13 @@ head(data)
 ::: {.cell-output .cell-output-stdout}
 
 ```
-           [,1]       [,2]
-[1,] -0.7745059  0.0191222
-[2,] -1.4531931  0.3494172
-[3,] -3.8408904 -3.9436878
-[4,] -0.4599452 -3.6196747
-[5,]  2.5089990  3.7550724
-[6,]  1.6358026  3.9237485
+            [,1]       [,2]
+[1,] -2.28712046 -5.7925998
+[2,]  1.94622405 -1.0715909
+[3,] -1.38990532 -4.6613096
+[4,]  0.09676132 -0.6099499
+[5,] -2.33520863 -2.4852549
+[6,] -2.12968476  0.5224903
 ```
 
 
@@ -390,6 +390,35 @@ ggplot(as.data.frame(data),
 
 
 :::
+
+::::
+
+## Simulation without a parametric model
+
+:::: {style="font-size: 75%;"}
+
+Background: 
+
+> _The paper tests whether linguistic measures of surprisal capture attention using a new synchronised tapping task we developed. Participants tap to the beat of a click track while ignoring continuous speech (an audiobook). A decoder is then trained to predict different speech features based on changes in participant’s tapping asynchrony (difference between tap and click time). One outcome measure is the coefficient (in this case Spearman’s rho) representing the correlation between predicted and observed speech features._ 
+
+> _To obtain the null distribution of r-values, we shuffled the tapping data and re-ran the analysis 1000 times. The p-value is the proportion of null r-values that are >= than the median observed r-value._ 
+
+::::
+
+::: {style="font-size: 55%;"}
+
+(Courtesy of Ashley Symons)
+
+:::
+
+ 
+
+:::: {style="font-size: 75%;"}
+
+- The editor asked for an experiment, with sample size determined by a power analysis.
+- No parametric model assumed for tapping behaviour.
+- It is possible to run simulations by _bootstrapping_ (sampling _with replacement_) available data.
+- Smaller effect sizes can be simulated by setting a small probability that each bootstrapped tapping sequence is replaced with a shuffled version.
 
 ::::
 

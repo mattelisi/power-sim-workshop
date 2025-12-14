@@ -90,12 +90,8 @@ Here is the function used to simulate the data. A few things to notice here:
   (ii) *trial-level choices*, generated from a **Bernoulli (binomial) distribution** given those parameters.  
   This hierarchical structure—multiple sources of variability at different levels—is precisely why models for these data are referred to as *multilevel* models. At the participant level, we allow the bias and variability parameters to be correlated, reflecting realistic individual differences in decision-making.
 
-- **Defining a “small” effect size in a GLMM.**  
-  We define the effect size in terms of the population-level SD across participant, so we multiply the Cohen's $d$ by the standard deviation $\Delta_{\text{PSE}} = d \times \text{SD}_{\text{PSE}}$. Note that as we define effect size in SD units of latent PSE (between-person SD) does not include variability due to "measurement" error (which depends on task design, number of trials, etc.)
-
-  <!-- We specify a small effect size as Cohen’s $d = 0.2$. Strictly speaking, Cohen’s $d$ is defined for linear models, and there is no exact analogue for non-linear models such as logistic or probit GLMs. A commonly used and pragmatic approximation is to convert a standardised effect size into the log-odds scale by multiplying by the standard deviation of the standard logistic distribution: $$\Delta_{\text{log-odds}} \;\approx\; \text{Cohen’s } d \times \frac{\pi}{\sqrt{3}}.$$ -->
-  <!-- Importantly, this approximation transform the effect on the log-odds scale (the linear predictor of the GLM), whereas our measure of interest truly is defined in terms of the PSE (Point of Subjective Equality: the difference value for which a participant is indifferent to choosing an immediate or delayed reward). We can further convert this as follow: $$\Delta_{\text{PSE}}= - \frac{\Delta_{\text{log-odds}}}{\text{slope}},$$where slope is the parameter that determine the steepness of the choice function.  -->
-  <!-- Because slope varies across participants, again there isn’t a single exact conversion. Using `mu_slope` (the baseline group mean slope) is a reasonable and common approximation.  -->
+- **Defining effect sizes in a GLMM.**  
+  We define the effect size in terms of the population-level SD across participant, so we multiply the standardised effect size by the standard deviation $\Delta_{\text{PSE}} = d \times \text{SD}_{\text{PSE}}$, which gives something that is conceptually similar to Cohen's $d$. Note that as we define effect size in SD units of latent PSE (between-person SD) does not include variability due to e.g. "measurement" error (which depends on task design, number of trials, etc.), and because of this the effect size is more conservative than an a true Cohen's $d$ of the same magnitude.
 
 
 ```{r}
@@ -109,14 +105,14 @@ simulate_dd <- function(
     sd_slope = 0.15,   # between-subject SD of slope
     rho      = 0,      # correlation between PSE and slope
     # ---- group effect (small effect, approx d = 0.2) ----
-    d_effect = 0.2,    # Cohen's d
+    d_effect = 0.5,    # conceptually similar to Cohen's d
     
     seed = NULL
 ){
   
   if (!is.null(seed)) set.seed(seed)
   
-  # we scale tghe effect size according to the SD across people
+  # we scale the effect size according to the SD across people
   delta <- d_effect * sd_pse
   
   # ---- covariance matrix for (PSE, slope) ----
@@ -188,11 +184,15 @@ We can visualise the simulated data:
 #| fig.height: 10
 #| fig.width: 10
 
+# function for binomial standard error (normal approximation)
+binomSEM <- function (v) sqrt((mean(v) * (1 - mean(v)))/length(v))
+
+# plot
 d %>%
   mutate(diff= delayed-immediate) %>%
   group_by(diff,subjectID, group) %>%
   summarise(choose_delayed = mean(choose_delayed),
-            se = mlisi::binomSEM(choose_delayed)) %>%
+            se = binomSEM(choose_delayed)) %>%
   ggplot(aes(x=diff, y=choose_delayed, 
              ymin=choose_delayed-se, 
              ymax=choose_delayed+se, 
@@ -215,8 +215,7 @@ fit_dd_glmer <- function(dat) {
   dat$group <- ifelse(dat$group=="PD",1,0)
   fit <-  lme4::glmer(choose_delayed ~ group * diff + (1 + diff | subjectID),
                       data = dat,
-                      family = binomial(link = "logit"),
-                      control = lme4::glmerControl(optimizer = "bobyqa"))
+                      family = binomial(link = "logit"))
   
   
   # --- extract Wald tests from model summary (simple & standard) ---
@@ -230,7 +229,7 @@ fit_dd_glmer <- function(dat) {
   
   # add effect on the PSE scale
   slope_CL <- coefs[rownames(coefs)=="diff",1]
-  slope_PD <- coefs[rownames(coefs)=="diff",1]
+  slope_PD <- slope_CL + coefs[rownames(coefs)=="group:diff",1] 
   PSE_CL <- - coefs[rownames(coefs)=="(Intercept)",1] / slope_CL
   PSE_PD <- - (coefs[rownames(coefs)=="(Intercept)",1]+coefs[rownames(coefs)=="group",1]) / slope_PD
   out$delta_PSE <- PSE_PD - PSE_CL
@@ -248,11 +247,11 @@ fit_dd_glmer(simulate_dd(n_per_group = 20))
 
 ### Code: power simulation
 
-We now have all the pieces that we need to estimate power by iteratively simulating the experiment with varying sample size (or effect sizes, if necessary). 
+We now have all the pieces that we need to estimate power by iteratively simulating the experiment with varying sample size or effect sizes. 
 
 ```{r, eval=FALSE}
 n_sim <- 100
-n_participants <- c(10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 120, 130, 140, 150)
+n_participants <- seq(25, 350, by=25)
 
 # this bit if you want a progress bar
 total_runs <- length(n_participants) * n_sim
@@ -274,7 +273,43 @@ for(n in n_participants){
 
 ```
 
-<!-- ADD here code for plotting results -->
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+sim_res <- read_csv("dd_sim1.csv")
+```
+
+Results
+
+```{r}
+head(sim_res)
+```
+
+
+Plotting the simulation-based power function:
+
+```{r}
+#| fig.align: 'center'
+#| fig.height: 4
+#| fig.width: 5
+
+
+sim_res %>%
+  mutate(reject_null = ifelse(p < 0.05, 1, 0)) %>%
+  group_by(N) %>%
+  summarise(power = mean(reject_null),
+            se = binomSEM(reject_null)) %>%
+  ggplot(aes(x=N, 
+             y=power, 
+             ymin = power - se,
+             ymax = power + se)) +
+  geom_hline(yintercept=0.8, lty=2)+
+  geom_line()+
+  geom_point()+
+  geom_errorbar(width=0)
+```
+
+
+
 
 ## Activity 2 — Experience sampling study
 
