@@ -349,13 +349,13 @@ head(data)
 ::: {.cell-output .cell-output-stdout}
 
 ```
-            [,1]       [,2]
-[1,] -2.28712046 -5.7925998
-[2,]  1.94622405 -1.0715909
-[3,] -1.38990532 -4.6613096
-[4,]  0.09676132 -0.6099499
-[5,] -2.33520863 -2.4852549
-[6,] -2.12968476  0.5224903
+            [,1]      [,2]
+[1,] -0.01471087 -3.760801
+[2,] -0.02810545 -2.216300
+[3,]  0.28279278 -2.237060
+[4,] -0.90829742  1.238896
+[5,] -0.86291109 -3.528150
+[6,] -1.89523402  1.207421
 ```
 
 
@@ -393,6 +393,14 @@ ggplot(as.data.frame(data),
 
 ::::
 
+## Worked examples
+
+Link: (mlisi.xyz/power-sim-workshop/)[https://mlisi.xyz/power-sim-workshop/]
+
+1. GLMM
+2. Experience sampling study
+
+
 ## Simulation without a parametric model
 
 :::: {style="font-size: 75%;"}
@@ -423,10 +431,4 @@ Background:
 ::::
 
 
-## Worked examples
-
-Link: (mlisi.xyz/power-sim-workshop/)[https://mlisi.xyz/power-sim-workshop/]
-
-1. GLMM
-2. Experience sampling study
 

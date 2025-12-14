@@ -18,7 +18,7 @@ library(rstan)
 library(lme4)
 ```
 
-## Activity 1 — Planning a delayed discounting study
+## Activity 1 — GLMM analysis of a delayed discounting study
 
 In this activity, we simulate data from a **delayed discounting task**, a commonly used paradigm to study impulsive decision-making. On each trial, participants choose between:
 
@@ -91,7 +91,24 @@ Here is the function used to simulate the data. A few things to notice here:
   This hierarchical structure—multiple sources of variability at different levels—is precisely why models for these data are referred to as *multilevel* models. At the participant level, we allow the bias and variability parameters to be correlated, reflecting realistic individual differences in decision-making.
 
 - **Defining effect sizes in a GLMM.**  
-  We define the effect size in terms of the population-level SD across participant, so we multiply the standardised effect size by the standard deviation $\Delta_{\text{PSE}} = d \times \text{SD}_{\text{PSE}}$, which gives something that is conceptually similar to Cohen's $d$. Note that as we define effect size in SD units of latent PSE (between-person SD) does not include variability due to e.g. "measurement" error (which depends on task design, number of trials, etc.), and because of this the effect size is more conservative than an a true Cohen's $d$ of the same magnitude.
+  In this example, we define the effect size in terms of variability on the *latent (PSE) scale*, aiming to approximate what a Cohen’s $d$ would represent if PSEs were estimated for each participant and compared across groups. To do this, we need to account for *both* sources of variability on the PSE scale:
+  
+  - between-participant variability in *true* PSEs, and  
+  - variability due to the stochastic choice process (logistic noise), which depends on the slope of the psychometric function.
+
+  Under a logistic choice model with slope $\beta$, the latent noise corresponds to a logistic distribution with standard deviation $(\pi/\sqrt{3}) / \beta$ when expressed on the PSE (difference) scale. We therefore approximate the *total* latent variability as:
+  $$\text{SD}_{\text{total}} \;\approx\;
+  \sqrt{
+    \text{SD}_{\text{PSE}}^2
+    \;+\;
+    \left(\frac{\pi}{\sqrt{3}\,\beta}\right)^2
+  }.$$
+
+  The group difference in PSE implied by the standardised effect size is then defined as:
+  $$\Delta_{\text{PSE}} = d \times \text{SD}_{\text{total}}.$$
+
+  This provides a reasonable approximation to Cohen’s $d$ that reflects all sources of variability on the latent PSE scale, so that the standardised effect size interpretation is as close as possible to a Cohen’s $d$ (although note that this should be considered an approximate analogue of Cohen’s $d$, rather than an exact equivalence).
+
 
 
 ```{r}
@@ -101,9 +118,9 @@ simulate_dd <- function(
     # ---- population-level parameters (baseline group) ----
     mu_pse   = 12.5,   # mean point of subjective equality (bias)
     mu_slope = 0.3,    # mean slope of psychometric function
-    sd_pse   = 2.0,    # between-subject SD of PSE
-    sd_slope = 0.15,   # between-subject SD of slope
-    rho      = 0,      # correlation between PSE and slope
+    sd_pse   = 3.0,    # between-subject SD of PSE
+    sd_slope = 0.1,    # between-subject SD of slope
+    rho      = -0.3,   # correlation between PSE and slope
     # ---- group effect (small effect, approx d = 0.2) ----
     d_effect = 0.5,    # conceptually similar to Cohen's d
     
@@ -112,8 +129,9 @@ simulate_dd <- function(
   
   if (!is.null(seed)) set.seed(seed)
   
-  # we scale the effect size according to the SD across people
-  delta <- d_effect * sd_pse
+  # we scale the effect size according to total 
+  # latent variability (between subject SD + logistic noise)
+  delta <- d_effect * sqrt(sd_pse^2 + ((pi/sqrt(3))/mu_slope)^2)
   
   # ---- covariance matrix for (PSE, slope) ----
   Sigma <- matrix(
@@ -140,11 +158,12 @@ simulate_dd <- function(
     
     for (s in 1:n_per_group) {
       
-      d_i <- design_dd[sample(nrow(design_dd)), ]
+      # here set the experimental design
+      d_i <- design_dd
       
       diff <- d_i$delayed - d_i$immediate
       
-      # psychometric (logistic) choice rule
+      # psychometric (logistic) choice function
       p_delayed <- 1 / (1 + exp(-theta[s, "slope"] *
                                   (diff - theta[s, "pse"])))
       
@@ -173,7 +192,7 @@ simulate_dd <- function(
 Example usage:
 
 ```{r}
-d <- simulate_dd(n_per_group = 10)
+d <- simulate_dd(n_per_group = 10, d_effect=0.5)
 str(d)
 ```
 
@@ -251,7 +270,7 @@ We now have all the pieces that we need to estimate power by iteratively simulat
 
 ```{r, eval=FALSE}
 n_sim <- 100
-n_participants <- seq(25, 350, by=25)
+n_participants <- seq(25, 150, by=25)
 
 # this bit if you want a progress bar
 total_runs <- length(n_participants) * n_sim
@@ -275,7 +294,7 @@ for(n in n_participants){
 
 
 ```{r, echo=FALSE, warning=FALSE, message=FALSE}
-sim_res <- read_csv("dd_sim1.csv")
+sim_res <- read_csv("dd_sim.csv")
 ```
 
 Results
@@ -290,28 +309,90 @@ Plotting the simulation-based power function:
 ```{r}
 #| fig.align: 'center'
 #| fig.height: 4
-#| fig.width: 5
+#| fig.width: 4
 
+# check which simulations rejected the null
+sim_res <- sim_res %>%
+  mutate(reject_null = ifelse(p < 0.05, 1, 0))
 
+# make plot
 sim_res %>%
-  mutate(reject_null = ifelse(p < 0.05, 1, 0)) %>%
-  group_by(N) %>%
+  group_by(N, ES) %>%
   summarise(power = mean(reject_null),
             se = binomSEM(reject_null)) %>%
   ggplot(aes(x=N, 
              y=power, 
-             ymin = power - se,
-             ymax = power + se)) +
+             color=ES)) +
   geom_hline(yintercept=0.8, lty=2)+
-  geom_line()+
+  stat_smooth(data=sim_res,                 # logistic function to summarise power curve
+              mapping=aes(y=reject_null), 
+              method="glm", 
+              method.args = list(family=binomial(link="logit"))) +
   geom_point()+
-  geom_errorbar(width=0)
+  geom_errorbar(aes(ymin = power - se,
+                    ymax = power + se),
+                width=0)
+```
+
+::: callout-tip
+
+#### Optional: Speeding up simulations with parallel computing
+
+This type of computations are sometimes described as ["embarrassingly parallel"](https://en.wikipedia.org/wiki/Embarrassingly_parallel) as it can be split into many independent tasks that run simultaneously with no communication needed between them. It can be significantly speeded up by running for example simulations for different sample sizes on separate cores in a cluster or multicore PC. In R this is easily done with the `parallel` library. 
+
+Parallel code implementation:
+
+```{r, eval=FALSE}
+library(parallel)
+
+# Set up parallel processing
+n_cores <- 8
+cl <- makeCluster(n_cores)
+
+# Load required libraries on each worker
+clusterEvalQ(cl, {
+  library(tidyverse)
+  library(lme4)
+})
+
+# Export necessary functions and objects to the cluster
+clusterExport(cl, c("fit_dd_glmer", "simulate_dd", "n_sim", "design_dd"))
+
+# Create a function that runs simulations for a single sample size
+run_sim_for_n <- function(n) {
+  results <- list()
+  for(i in 1:n_sim) {
+    sim_i <- fit_dd_glmer(simulate_dd(n_per_group = n,
+                                          d_effect = 0.5))
+    sim_i$n_per_group <- n
+    sim_i$sim <- i
+    sim_i$ES <- 0.5
+    results[[i]] <- sim_i
+  }
+  do.call(rbind, results)
+}
+
+# Run simulations in parallel across sample sizes
+sim_res_list <- parLapply(cl, n_participants, run_sim_for_n)
+
+# Stop the cluster
+stopCluster(cl)
+
+# Combine all results
+sim_res <- do.call(rbind, sim_res_list)
 ```
 
 
+:::
 
 
-## Activity 2 — Experience sampling study
+### Further task
+
+Modify the simulation code to explore multiple effect sizes and/or different numbers of trials per participant. Examine how increasing the number of participants compares to increasing the number of trials per participant in terms of statistical power.
+
+  
+
+## Activity 2 — LMM analysis of an experience sampling study
 
 In this activity, we simulate data from an experience sampling (or daily diary) study in which the same participants are measured repeatedly over several days. We then use a multilevel (mixed-effects) model to analyse the data and estimate statistical power for key effects of interest. We can set up our simulations to account for missing observations, or autocorrelation in the predictor.
 
@@ -346,15 +427,13 @@ In this simulation, both components are standardised separately. This means that
 
 This is convenient for setting plausible effect sizes based on common “small / medium / large” conventions.
 
----
+::: callout-tip
 
 ### Temporal dependence and the AR(1) process
 
 In many experience sampling studies, measurements taken close together in time are more similar than measurements taken further apart. For example, how someone feels today is likely to be related to how they felt yesterday. This is known as **temporal autocorrelation**.
 
 In this activity, we model temporal dependence in the *within-person deviations of the predictor* using an **AR(1) process** (autoregressive process of order 1).
-
-#### The AR(1) idea
 
 An AR(1) process assumes that each value depends partly on the previous value plus some new random fluctuation:
 
@@ -366,8 +445,6 @@ where:
 
 If $r = 0$, observations are independent over time.  
 If $r > 0$, consecutive observations tend to be similar ("sticky" over time).
-
-#### Why the variance matters
 
 We want the simulated time series to have a **stable (stationary) variance** over time. For a stationary AR(1) process, the variance of the series satisfies:
 
@@ -383,7 +460,6 @@ $$ \mathrm{Var}(\text{out}) = \frac{\mathrm{Var}(\text{innovation})}{1 - r^2} $$
 
 This shows that stronger autocorrelation (larger $r$) increases the overall variability of the time series for a given amount of noise.
 
-#### Choosing the innovation variance
 
 In the simulation, we want the AR(1) process to have a **target standard deviation** $s$ (e.g., the within-person SD of the predictor). To achieve this, we set the innovation variance so that:
 
@@ -401,6 +477,8 @@ This ensures that, regardless of the value of $r$, the simulated within-person d
 
 Note that here we include autocorrelation in the predictor but assume that residual errors in the outcome are independent. This keeps the fitted multilevel model correctly specified, while still allowing temporal structure in the data-generating process. It is possible to relax this assumption, but then the model (as it is formulated now, using the `lme4` library) would be miss-specified. This can be OK (perhaps we want to check the effect of model misspecification on power or on false-positive rate). To fit a model that explicitly allows for residual autocorrelation we need a different package (see `?corAR1` in the `nlme` package).
 
+:::
+
 ### Code: data simulation
 
 For this example we need these packages:
@@ -412,7 +490,7 @@ library(tidyverse)
 library(MASS)   # for mvrnorm()
 ```
 
-We first define a custom function for the AR(1) process, to simulate a vector os size `n` with a set variance `s` and autocorrelation `r`.
+We first define a custom function for the AR(1) process, to simulate a vector of size `n` with a set variance `s` and autocorrelation `r`.
 
 ```{r}
 r_ar1 <- function(n, s, r){
@@ -536,6 +614,44 @@ sim_diary <- function(
 ```
 
 
+Visualisation is a good approach to check that the simuated data is sensible
+
+
+```{r}
+#| fig.align: 'center'
+#| fig.height: 4
+#| fig.width: 9
+
+library(patchwork)
+
+# simulate data
+dat <- sim_diary(n_child = 30, n_days = 7)
+
+# plot trajectories
+p_trajectories <- ggplot(dat, aes(x = day, y = y, group = id)) +
+  geom_line(alpha = 0.3) +
+  geom_point(alpha = 0.3) +
+  labs(
+    x = "Day",
+    y = "Outcome (y)"
+  )
+
+# plot within-person association 
+p_within <- ggplot(dat, aes(x = x_cwc, y = y, group = id)) +
+  geom_point(alpha = 0.4) +
+  geom_smooth(method = "lm", se = FALSE, color = "black") +
+  labs(
+    x = "Within-person deviation of X (x_cwc)",
+    y = "Outcome (y)",
+    title = "Within-person effect"
+  ) 
+
+# combine using patchwork library
+p_trajectories + p_within
+
+```
+
+
 ### Code: fit model and extract statistics
 
 It is convenient to wrap the code for fitting the model and extracting the statistic of interest in a custom function.
@@ -615,3 +731,19 @@ quick_A
 
 ```
 
+
+### Further task
+
+Extend the code above to explore how different design choices affect statistical power in experience sampling studies.
+
+In particular:
+
+- Complete the analysis by writing a loop that evaluates power across increasing numbers of participants.
+- As robustness checks, modify the simulation to also vary:
+  - the autocorrelation in the predictor (`rho_x_ar1`), and
+  - the number of days in the diary study (`n_days`).
+  - the rate of missing observations (`mcar_rate`).
+
+Use these simulations to compare how increasing the number of participants versus increasing the number of repeated measurements per participant contributes to statistical power, and whether this differs for within-person effects (`beta_w`) and between-person effects (`beta_b`).
+
+As a final challenge, modify the data-simulation code to include *attrition*, such that some participants begin the study but drop out partway through and provide no further observations. Explore how attrition (and its timing) impacts statistical power, and whether its effects differ from those of randomly missing observations.

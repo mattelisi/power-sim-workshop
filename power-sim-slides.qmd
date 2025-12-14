@@ -405,6 +405,14 @@ ggplot(as.data.frame(data),
 
 ::::
 
+## Worked examples
+
+Link: (mlisi.xyz/power-sim-workshop/)[https://mlisi.xyz/power-sim-workshop/]
+
+1. GLMM
+2. Experience sampling study
+
+
 ## Simulation without a parametric model
 
 :::: {style="font-size: 75%;"}
@@ -435,10 +443,4 @@ Background:
 ::::
 
 
-## Worked examples
-
-Link: (mlisi.xyz/power-sim-workshop/)[https://mlisi.xyz/power-sim-workshop/]
-
-1. GLMM
-2. Experience sampling study
 
