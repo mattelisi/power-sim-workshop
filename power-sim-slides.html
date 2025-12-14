@@ -29,6 +29,71 @@
       margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
       vertical-align: middle;
     }
+    /* CSS for syntax highlighting */
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      { color: #003b4f; background-color: #f1f3f5; }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span { color: #003b4f; } /* Normal */
+    code span.al { color: #ad0000; } /* Alert */
+    code span.an { color: #5e5e5e; } /* Annotation */
+    code span.at { color: #657422; } /* Attribute */
+    code span.bn { color: #ad0000; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #003b4f; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #20794d; } /* Char */
+    code span.cn { color: #8f5902; } /* Constant */
+    code span.co { color: #5e5e5e; } /* Comment */
+    code span.cv { color: #5e5e5e; font-style: italic; } /* CommentVar */
+    code span.do { color: #5e5e5e; font-style: italic; } /* Documentation */
+    code span.dt { color: #ad0000; } /* DataType */
+    code span.dv { color: #ad0000; } /* DecVal */
+    code span.er { color: #ad0000; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #ad0000; } /* Float */
+    code span.fu { color: #4758ab; } /* Function */
+    code span.im { color: #00769e; } /* Import */
+    code span.in { color: #5e5e5e; } /* Information */
+    code span.kw { color: #003b4f; font-weight: bold; } /* Keyword */
+    code span.op { color: #5e5e5e; } /* Operator */
+    code span.ot { color: #003b4f; } /* Other */
+    code span.pp { color: #ad0000; } /* Preprocessor */
+    code span.sc { color: #5e5e5e; } /* SpecialChar */
+    code span.ss { color: #20794d; } /* SpecialString */
+    code span.st { color: #20794d; } /* String */
+    code span.va { color: #111111; } /* Variable */
+    code span.vs { color: #20794d; } /* VerbatimString */
+    code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   </style>
   <link rel="stylesheet" href="power-sim-slides_files/libs/revealjs/dist/theme/quarto.css">
   <link href="power-sim-slides_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
@@ -347,8 +412,16 @@ Matteo Lisi
 </section>
 <section id="section" class="slide level2">
 <h2></h2>
-
-<img data-src="power-sim-slides_files/figure-revealjs/unnamed-chunk-2-1.png" class="quarto-figure quarto-figure-center r-stretch" width="921"><div style="font-size: 70%;">
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="power-sim-slides_files/figure-revealjs/unnamed-chunk-2-1.png" class="quarto-figure quarto-figure-center" width="921"></p>
+</figure>
+</div>
+</div>
+</div>
+<div style="font-size: 70%;">
 <table class="caption-top">
 <colgroup>
 <col style="width: 10%">
@@ -387,7 +460,7 @@ Matteo Lisi
 <li class="fragment">For simple tests (e.g.&nbsp;correlations, t-tests), power can be computed analytically (e.g.&nbsp;using the <code>pwr</code> package in R).</li>
 <li class="fragment">More complex designs are often easier to handle using simulation-based approaches.</li>
 <li class="fragment">Simulations allow us to define a <em>ground truth</em> against which to evaluate a study design.</li>
-<li class="fragment">Crucially, simulations can model realistic features of data collection (e.g.&nbsp;attrition, missing data, non-ideal assumptions).</li>
+<li class="fragment">Crucially, simulations can incorporate realistic features of both data collection (e.g.&nbsp;attrition, missing data) and inference (e.g.&nbsp;multilevel models, or requiring multiple effects to be significant simultaneously).</li>
 </ul>
 </section>
 <section id="simulation-approach-in-1-figure" class="slide level2">
@@ -402,26 +475,213 @@ Matteo Lisi
 <section id="section-1" class="slide level2">
 <h2></h2>
 <h3 id="simulation-approach-in-simple-linear-models-regression-anova">Simulation approach in simple linear models (regression, ANOVA)</h3>
-<p>&nbsp;</p>
 <div class="columns">
-<div class="column" style="width:75%;">
+<div class="column" style="width:80%;">
 <div>
-<p>&nbsp;</p>
 <ul>
-<li>Chapter 6 of <a href="https://www.mheducation.co.uk/statistics-for-psychology-using-r-a-linear-models-perspective-9780335252626-emea-group">my book</a> (available in the Library)</li>
-</ul>
-<p>&nbsp;</p>
-<ul>
-<li>This prior training seminar: <a href="https://mlisi.xyz/RHUL-stats/workshops.html#power-analyses-via-data-simulation">link</a></li>
+<li><p>Chapter 6 of <a href="https://www.mheducation.co.uk/statistics-for-psychology-using-r-a-linear-models-perspective-9780335252626-emea-group">our book</a> (available in the Library)</p></li>
+<li><p>This prior training seminar: <a href="https://mlisi.xyz/RHUL-stats/workshops.html#power-analyses-via-data-simulation">link</a></p></li>
 </ul>
 </div>
-</div><div class="column" style="width:25%;">
+<div class="fragment">
+<iframe src="https://mlisi.xyz/files/workshops/power_analyses/power_analyses.html#75" style="width:80%; height:50vh; border:none;">
+</iframe>
+</div>
+</div><div class="column" style="width:20%;">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="img/book_cover.png" class="nostretch quarto-figure quarto-figure-center" style="width:100.0%"></p>
+<p><img data-src="img/book_cover.png" class="quarto-figure quarto-figure-center" style="width:100.0%"></p>
 </figure>
 </div>
 </div></div>
+</section>
+<section id="basics-of-data-simulation" class="slide level2 inverse">
+<h2>Basics of data simulation</h2>
+<ul>
+<li class="fragment"><p>R has some useful functions for generating data randomly drawn from different distributions.</p></li>
+<li class="fragment"><p>Random generation functions usually have the <code>r</code> prefix, for example:</p>
+<ul>
+<li class="fragment"><code>rnorm()</code> for the normal distribution</li>
+<li class="fragment"><code>rbinom()</code> for the binomial distribution</li>
+</ul></li>
+<li class="fragment"><p>To see all distributions available in the <code>stats</code> package (included in R installation by default) type <code>?Distributions</code></p></li>
+</ul>
+</section>
+<section id="section-2" class="slide level2">
+<h2></h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p>Uniform distribution from 0 to 1</p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="" aria-hidden="true" tabindex="-1"></a>N <span class="ot">&lt;-</span> <span class="dv">1000</span></span>
+<span id="cb1-2"><a href="" aria-hidden="true" tabindex="-1"></a>unifSamples <span class="ot">&lt;-</span> <span class="fu">runif</span>(N, <span class="at">min =</span> <span class="dv">0</span>, <span class="at">max =</span> <span class="dv">1</span>)</span>
+<span id="cb1-3"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(unifSamples)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="power-sim-slides_files/figure-revealjs/unnamed-chunk-3-1.png" class="quarto-figure quarto-figure-center" width="480"></p>
+</figure>
+</div>
+</div>
+</div>
+</div><div class="column" style="width:50%;">
+<p>Normal distribution with mean 5 and standard deviation 1</p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="" aria-hidden="true" tabindex="-1"></a>normSamples <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(N, <span class="at">mean =</span> <span class="dv">5</span>, <span class="at">sd =</span> <span class="dv">1</span>)</span>
+<span id="cb2-2"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(normSamples)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="power-sim-slides_files/figure-revealjs/unnamed-chunk-4-1.png" class="quarto-figure quarto-figure-center" width="480"></p>
+</figure>
+</div>
+</div>
+</div>
+</div></div>
+</section>
+<section id="section-3" class="slide level2">
+<h2></h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p>Binomial distribution, 10 trials with success probability 0.25</p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="" aria-hidden="true" tabindex="-1"></a>binomSamples <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(N, <span class="at">size =</span> <span class="dv">10</span>, <span class="at">prob =</span> <span class="fl">0.25</span>)</span>
+<span id="cb3-2"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(binomSamples)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="power-sim-slides_files/figure-revealjs/unnamed-chunk-5-1.png" class="quarto-figure quarto-figure-center" width="480"></p>
+</figure>
+</div>
+</div>
+</div>
+</div><div class="column" style="width:50%;">
+<p>Student’s t distribution with 4 degrees of freedom</p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="" aria-hidden="true" tabindex="-1"></a>tSamples <span class="ot">&lt;-</span> <span class="fu">rt</span>(N, <span class="at">df =</span> <span class="dv">4</span>)</span>
+<span id="cb4-2"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(tSamples)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="power-sim-slides_files/figure-revealjs/unnamed-chunk-6-1.png" class="quarto-figure quarto-figure-center" width="480"></p>
+</figure>
+</div>
+</div>
+</div>
+</div></div>
+</section>
+<section id="ordinal-variables" class="slide level2">
+<h2>Ordinal variables</h2>
+<p>Ordinal variables can be simulated with the <code>rmultinom()</code>, but we need to ensure that the probabilities (the parameters of the multinomial distribution) are allocated in a way that is consistent with the analysis model. See example at <a href="https://mlisi.xyz/RHUL-stats/ordinal.html">mlisi.xyz/RHUL-stats/ordinal.html</a> for simulating a multilevel ordinal logistic model.</p>
+<div class="fragment">
+<iframe src="https://mlisi.xyz/RHUL-stats/ordinal.html" style="width:100%; height:80vh; border:none;" scrolling="yes">
+</iframe>
+</div>
+</section>
+<section id="simulating-multivariate-normal-data" class="slide level2">
+<h2>Simulating Multivariate Normal Data</h2>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="power-sim-slides_files/figure-revealjs/unnamed-chunk-7-1.png" class="quarto-figure quarto-figure-center" width="816"></p>
+</figure>
+</div>
+</div>
+</div>
+<ul>
+<li class="fragment"><p>To simulate multiple variables, we must specify not only their marginal properties (e.g.&nbsp;means and SD) but also how they are correlated.</p></li>
+<li class="fragment"><p>Particularly important for longitudinal or repeated-measures designs, where observations from the same participant are typically correlated.</p></li>
+<li class="fragment"><p>In multilevel (mixed-effects) models person-specific effects (random effects, interpreted as <em>latent, individual-level characteristics</em>) follow a multivariate normal distribution.</p></li>
+</ul>
+</section>
+<section id="section-4" class="slide level2">
+<h2></h2>
+<p><strong>Example: 2 correlated normal variables:</strong></p>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p><em>Define standard deviations and correlations</em></p>
+<div>
+<ul>
+<li><span class="math inline">\(\sigma_1\)</span> and <span class="math inline">\(\sigma_2\)</span>: standard deviations</li>
+<li><span class="math inline">\(\rho\)</span>: correlation</li>
+</ul>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="" aria-hidden="true" tabindex="-1"></a>sigma1 <span class="ot">&lt;-</span> <span class="dv">2</span></span>
+<span id="cb5-2"><a href="" aria-hidden="true" tabindex="-1"></a>sigma2 <span class="ot">&lt;-</span> <span class="dv">3</span></span>
+<span id="cb5-3"><a href="" aria-hidden="true" tabindex="-1"></a>rho <span class="ot">&lt;-</span> <span class="fl">0.5</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div><div class="column" style="width:50%;">
+<div class="fragment">
+<p><em>Construct the 2×2 variance–covariance matrix</em></p>
+<p><span class="math display">\[\mathbf{\Sigma} = \left[ \begin{array}{cc} \sigma_1^2 &amp; \sigma_1 \sigma_2 \rho \\ \sigma_1 \sigma_2 \rho &amp; \sigma_2^2 \end{array} \right]\]</span></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="" aria-hidden="true" tabindex="-1"></a>sigma <span class="ot">&lt;-</span> <span class="fu">matrix</span>(</span>
+<span id="cb6-2"><a href="" aria-hidden="true" tabindex="-1"></a>  <span class="fu">c</span>(sigma1<span class="sc">^</span><span class="dv">2</span>,</span>
+<span id="cb6-3"><a href="" aria-hidden="true" tabindex="-1"></a>    rho <span class="sc">*</span> sigma1 <span class="sc">*</span> sigma2,</span>
+<span id="cb6-4"><a href="" aria-hidden="true" tabindex="-1"></a>    rho <span class="sc">*</span> sigma1 <span class="sc">*</span> sigma2,</span>
+<span id="cb6-5"><a href="" aria-hidden="true" tabindex="-1"></a>    sigma2<span class="sc">^</span><span class="dv">2</span>),</span>
+<span id="cb6-6"><a href="" aria-hidden="true" tabindex="-1"></a>  <span class="at">ncol =</span> <span class="dv">2</span>, </span>
+<span id="cb6-7"><a href="" aria-hidden="true" tabindex="-1"></a>  <span class="at">nrow =</span> <span class="dv">2</span>)</span>
+<span id="cb6-8"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-9"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(sigma)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     [,1] [,2]
+[1,]    4    3
+[2,]    3    9</code></pre>
+</div>
+</div>
+</div>
+</div></div>
+</section>
+<section id="section-5" class="slide level2">
+<h2></h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p>Multivariate normal data can then be simulated with <code>mvrnorm()</code> (in the <code>MASS</code> package)</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(MASS)</span>
+<span id="cb8-2"><a href="" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">mvrnorm</span>(N,</span>
+<span id="cb8-3"><a href="" aria-hidden="true" tabindex="-1"></a>          <span class="at">mu =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>),</span>
+<span id="cb8-4"><a href="" aria-hidden="true" tabindex="-1"></a>          <span class="at">Sigma =</span> sigma)</span>
+<span id="cb8-5"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-6"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>           [,1]       [,2]
+[1,] -0.7745059  0.0191222
+[2,] -1.4531931  0.3494172
+[3,] -3.8408904 -3.9436878
+[4,] -0.4599452 -3.6196747
+[5,]  2.5089990  3.7550724
+[6,]  1.6358026  3.9237485</code></pre>
+</div>
+</div>
+</div><div class="column" style="width:50%;">
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="fu">as.data.frame</span>(data), </span>
+<span id="cb10-2"><a href="" aria-hidden="true" tabindex="-1"></a>       <span class="fu">aes</span>(<span class="at">x =</span> V1, </span>
+<span id="cb10-3"><a href="" aria-hidden="true" tabindex="-1"></a>           <span class="at">y =</span> V2)) <span class="sc">+</span></span>
+<span id="cb10-4"><a href="" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb10-5"><a href="" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Variable 1"</span>, </span>
+<span id="cb10-6"><a href="" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Variable 2"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="power-sim-slides_files/figure-revealjs/unnamed-chunk-11-1.png" class="quarto-figure quarto-figure-center" width="240"></p>
+</figure>
+</div>
+</div>
+</div>
+</div></div>
+</section>
+<section id="worked-examples" class="slide level2">
+<h2>Worked examples</h2>
+<p>Link: (mlisi.xyz/power-sim-workshop/)[https://mlisi.xyz/power-sim-workshop/]</p>
+<ol type="1">
+<li class="fragment">GLMM</li>
+<li class="fragment">Experience sampling study</li>
+</ol>
 <div class="quarto-auto-generated-content">
 <p><img src="img/logo-small-london-cmyk.jpg" class="slide-logo"></p>
 <div class="footer footer-default">

@@ -7,7 +7,7 @@ format:
     logo: img/logo-small-london-cmyk.jpg
     footer: "Researcher Support & Development workshop, 15th December 2025"
     incremental: true  
-    auto-stretch: true
+    auto-stretch: false
     code-fold: false   # don’t fold
     code-line-numbers: false
     theme: [default, matteo_rhul.css]
@@ -83,10 +83,10 @@ poly$id <- factor(poly$id,  labels=c("power","beta","alpha"))
 
 # plot with ggplot2
 ggplot(poly, aes(x,y, fill=id, group=id)) +
-  geom_polygon(show_guide=F, alpha=I(8/10)) +
-  geom_line(data=df1, aes(x,y, color="H0", group=NULL, fill=NULL), size=1.5, show_guide=F) + 
-  geom_line(data=df2, aes(color="HA", group=NULL, fill=NULL),size=1.5, show_guide=F) +
-  geom_vline(xintercept = z_crit, size=1, linetype="dashed", color="black") +
+  geom_polygon(show.legend=F, alpha=I(8/10)) +
+  geom_line(data=df1, aes(x,y, color="H0", group=NULL, fill=NULL), linewidth=1.5, show.legend=F) + 
+  geom_line(data=df2, aes(color="HA", group=NULL, fill=NULL),linewidth=1.5, show.legend=F) +
+  geom_vline(xintercept = z_crit, linewidth=1, linetype="dashed", color="black") +
   scale_color_manual("Group", 
                      values= c("HA" = "#981e0b","H0" = "black")) +
   scale_fill_manual("test", values= c("alpha" = "#0d6374","beta" = "#be805e","power"="#7cecee")) +
@@ -140,29 +140,276 @@ ggplot(poly, aes(x,y, fill=id, group=id)) +
 
 ### Simulation approach in simple linear models (regression, ANOVA)
 
- 
 
 ::::::::: columns
-::::::: {.column width="75%"}
+::::::: {.column width="80%"}
 
 ::: nonincremental
 
- 
 
 - Chapter 6 of [our book](https://www.mheducation.co.uk/statistics-for-psychology-using-r-a-linear-models-perspective-9780335252626-emea-group) (available in the Library)
 
- 
 
 - This prior training seminar: [link](https://mlisi.xyz/RHUL-stats/workshops.html#power-analyses-via-data-simulation) 
+
 :::
+
+:::: fragment
+
+<iframe
+  src="https://mlisi.xyz/files/workshops/power_analyses/power_analyses.html#75"
+  style="width:80%; height:50vh; border:none;">
+</iframe>
+
+::::
 
 :::::::
 
-
-::::::: {.column width="25%"}
+::::::: {.column width="20%"}
 
 ![](img/book_cover.png){.nostretch fig-align="center" width="100%"}
 
 :::::::
 :::::::::
+
+
+
+## Basics of data simulation {class="inverse"}
+
+- R has some useful functions for generating data randomly drawn from different distributions.
+
+- Random generation functions usually have the `r` prefix, for example:
+  - `rnorm()` for the normal distribution
+  - `rbinom()` for the binomial distribution
+
+- To see all distributions available in the `stats` package (included in R installation by default) type `?Distributions`
+
+##
+
+:::: columns
+::: {.column width="50%"}
+
+Uniform distribution from 0 to 1
+
+```{r}
+#| echo: true
+#| fig-align: center
+#| fig-height: 4
+#| fig-width: 5
+
+N <- 1000
+unifSamples <- runif(N, min = 0, max = 1)
+hist(unifSamples)
+```
+
+:::
+
+::: {.column width="50%"}
+
+Normal distribution with mean 5 and standard deviation 1
+
+```{r}
+#| echo: true
+#| fig-align: center
+#| fig-height: 4
+#| fig-width: 5
+
+normSamples <- rnorm(N, mean = 5, sd = 1)
+hist(normSamples)
+```
+
+:::
+::::
+
+##
+
+:::: columns
+::: {.column width="50%"}
+
+Binomial distribution, 10 trials with success probability 0.25
+
+```{r}
+#| echo: true
+#| fig-align: center
+#| fig-height: 4
+#| fig-width: 5
+
+binomSamples <- rbinom(N, size = 10, prob = 0.25)
+hist(binomSamples)
+```
+
+:::
+
+::: {.column width="50%"}
+
+Student’s t distribution with 4 degrees of freedom
+
+```{r}
+#| echo: true
+#| fig-align: center
+#| fig-height: 4
+#| fig-width: 5
+
+tSamples <- rt(N, df = 4)
+hist(tSamples)
+```
+
+:::
+::::
+
+## Ordinal variables
+
+Ordinal variables can be simulated with the `rmultinom()`, but we need to ensure that the probabilities (the parameters of the multinomial distribution) are allocated in a way that is consistent with the analysis model. See example at [mlisi.xyz/RHUL-stats/ordinal.html](https://mlisi.xyz/RHUL-stats/ordinal.html) for simulating a multilevel ordinal logistic model.
+
+::: fragment
+
+<iframe
+  src="https://mlisi.xyz/RHUL-stats/ordinal.html"
+  style="width:100%; height:80vh; border:none;"
+  scrolling="yes">
+</iframe>
+
+
+:::
+
+## Simulating Multivariate Normal Data
+
+
+```{r}
+#| fig-height: 2.5
+#| fig-align: center
+#| fig-width: 8.5
+#| message: false
+#| echo: false
+#| warning: false
+
+n_obs <- 250
+rn5 <- MASS::mvrnorm(n_obs, c(0,0), Sigma = matrix(c(1,-0.7,-0.7,1), nrow = 2))
+r00 <- MASS::mvrnorm(n_obs, c(0,0), Sigma = matrix(c(1, 0, 0,1), nrow = 2))
+r03 <- MASS::mvrnorm(n_obs, c(0,0), Sigma = matrix(c(1, 0.5,0.5,1), nrow = 2))
+r07 <- MASS::mvrnorm(n_obs, c(0,0), Sigma = matrix(c(1, 0.85,0.85,1), nrow = 2))
+
+dat <- data.frame(rbind(rn5, r00, r03, r07))
+dat$correlation <- c(rep("rho==-0.7", n_obs),
+rep("rho==0",    n_obs),
+rep("rho==0.5",  n_obs),
+rep("rho==0.85", n_obs))
+
+ggplot(dat, aes(x = X1, y = X2)) +
+geom_point(alpha = 0.8) +
+facet_grid(. ~ correlation, labeller = label_parsed) +
+labs(x = expression(x[1]), y = expression(x[2]))
+
+```
+
+- To simulate multiple variables, we must specify not only their marginal properties (e.g. means and SD) but also how they are correlated.
+
+- Particularly important for longitudinal or repeated-measures designs, where observations from the same participant are typically correlated.
+
+- In multilevel (mixed-effects) models person-specific effects (random effects, interpreted as _latent, individual-level characteristics_) follow a multivariate normal distribution.
+
+
+
+##
+
+**Example: 2 correlated normal variables:**
+
+:::: columns
+::: {.column width="50%"}
+
+*Define standard deviations and correlations*
+
+::::: nonincremental
+
+- $\sigma_1$ and $\sigma_2$: standard deviations
+- $\rho$: correlation
+
+:::::
+
+```{r}
+#| echo: true
+sigma1 <- 2
+sigma2 <- 3
+rho <- 0.5
+```
+
+:::
+
+
+
+::: {.column width="50%"}
+
+:::::: fragment
+
+*Construct the 2×2 variance–covariance matrix*
+
+$$\mathbf{\Sigma} = \left[ \begin{array}{cc} \sigma_1^2 & \sigma_1 \sigma_2 \rho \\ \sigma_1 \sigma_2 \rho & \sigma_2^2 \end{array} \right]$$
+
+```{r}
+#| echo: true
+sigma <- matrix(
+  c(sigma1^2,
+    rho * sigma1 * sigma2,
+    rho * sigma1 * sigma2,
+    sigma2^2),
+  ncol = 2, 
+  nrow = 2)
+
+print(sigma)
+```
+
+::::::
+
+:::
+
+::::
+
+
+##
+
+:::: columns
+::: {.column width="50%"}
+
+Multivariate normal data can then be simulated with `mvrnorm()` (in the `MASS` package)
+
+```{r}
+#| echo: true
+library(MASS)
+data <- mvrnorm(N,
+          mu = c(0, 0),
+          Sigma = sigma)
+
+head(data)
+```
+:::
+
+
+::: {.column width="50%"}
+
+```{r}
+#| echo: true
+#| fig-height: 2.5
+#| fig-width: 2.5
+#| fig-align: center
+
+ggplot(as.data.frame(data), 
+       aes(x = V1, 
+           y = V2)) +
+  geom_point(alpha = 0.5) +
+  labs(x = "Variable 1", 
+       y = "Variable 2")
+```
+
+
+:::
+
+::::
+
+
+## Worked examples
+
+Link: (mlisi.xyz/power-sim-workshop/)[https://mlisi.xyz/power-sim-workshop/]
+
+1. GLMM
+2. Experience sampling study
 
