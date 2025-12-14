@@ -349,13 +349,13 @@ head(data)
 ::: {.cell-output .cell-output-stdout}
 
 ```
-            [,1]      [,2]
-[1,] -0.01471087 -3.760801
-[2,] -0.02810545 -2.216300
-[3,]  0.28279278 -2.237060
-[4,] -0.90829742  1.238896
-[5,] -0.86291109 -3.528150
-[6,] -1.89523402  1.207421
+            [,1]       [,2]
+[1,]  0.35225978  1.4134922
+[2,] -2.89296144  2.2485596
+[3,] -0.05513042  2.4049586
+[4,] -2.62137544 -1.4006813
+[5,] -2.37764916  0.2167824
+[6,]  0.70270830  3.2861880
 ```
 
 
@@ -395,10 +395,19 @@ ggplot(as.data.frame(data),
 
 ## Worked examples
 
-Link: (mlisi.xyz/power-sim-workshop/)[https://mlisi.xyz/power-sim-workshop/]
+Link: [mlisi.xyz/power-sim-workshop/](https://mlisi.xyz/power-sim-workshop/)
 
 1. GLMM
 2. Experience sampling study
+
+
+## Further examples
+
+- Simulations for a grant proposal, including of Bayesian multilevel SDT model [OSF link](https://osf.io/bxwdt/overview).
+
+- Registered report: [paper](https://bpspsychub.onlinelibrary.wiley.com/doi/full/10.1111/bjhp.70020), [power simulation script](https://osf.io/89cv5/files/yzdp3)
+
+- PSA-JTF3 collaboration: [stage 1 paper](https://osf.io/preprints/psyarxiv/wegc5_v1), [power analyses](https://osf.io/mquvn/files/dnsz8)
 
 
 ## Simulation without a parametric model
