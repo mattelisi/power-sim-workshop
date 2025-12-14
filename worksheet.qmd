@@ -34,9 +34,9 @@ Two key features of behaviour in this task are:
 - **Slope:**  
   how sharply choices switch from preferring the immediate to the delayed option as the reward difference increases. Shallower slopes indicate noisier or less consistent preferences.
 
-**Why might we want to simulate this task?** Delayed discounting tasks are widely used in clinical and cognitive neuroscience to study impulsivity and reward processing. For example, one possible application is in Parkinson’s disease, where dopaminergic medication (such as L-DOPA or dopamine agonists) has been linked to changes in impulsivity and reward sensitivity. Some studies suggest that dopaminergic treatment can increase impulsive choice in certain patients, although effects can vary across individuals.
+Delayed discounting tasks are used to study impulsivity and reward processing. Dopaminergic medication (such as L-DOPA or dopamine agonists) has been linked to changes in impulsivity and reward sensitivity and some studies suggest that dopaminergic treatment can increase impulsive choice in certain patients.
 
-In this example, we simulate two groups (e.g. patients *on* vs *off* medication, or patients vs controls), assuming a small group difference in the underlying decision parameters. Rather than analysing raw choice proportions, we model behaviour at the level of latent psychometric parameters and use simulation to explore how sample size, effect size, and individual variability affect statistical power.
+In this example, we simulate two groups (e.g. patients *on* vs *off* medication, or patients vs controls), assuming a small group difference in the underlying decision parameters. We model behaviour at the level of latent psychometric parameters and use simulation to explore how sample size and other parameters affect statistical power.
 
 ### Task design
 

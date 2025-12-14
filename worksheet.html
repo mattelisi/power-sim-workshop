@@ -171,8 +171,8 @@ the reward difference at which a participant is equally likely to choose the imm
 <li><strong>Slope:</strong><br>
 how sharply choices switch from preferring the immediate to the delayed option as the reward difference increases. Shallower slopes indicate noisier or less consistent preferences.</li>
 </ul>
-<p><strong>Why might we want to simulate this task?</strong> Delayed discounting tasks are widely used in clinical and cognitive neuroscience to study impulsivity and reward processing. For example, one possible application is in Parkinson’s disease, where dopaminergic medication (such as L-DOPA or dopamine agonists) has been linked to changes in impulsivity and reward sensitivity. Some studies suggest that dopaminergic treatment can increase impulsive choice in certain patients, although effects can vary across individuals.</p>
-<p>In this example, we simulate two groups (e.g.&nbsp;patients <em>on</em> vs <em>off</em> medication, or patients vs controls), assuming a small group difference in the underlying decision parameters. Rather than analysing raw choice proportions, we model behaviour at the level of latent psychometric parameters and use simulation to explore how sample size, effect size, and individual variability affect statistical power.</p>
+<p>Delayed discounting tasks are used to study impulsivity and reward processing. Dopaminergic medication (such as L-DOPA or dopamine agonists) has been linked to changes in impulsivity and reward sensitivity and some studies suggest that dopaminergic treatment can increase impulsive choice in certain patients.</p>
+<p>In this example, we simulate two groups (e.g.&nbsp;patients <em>on</em> vs <em>off</em> medication, or patients vs controls), assuming a small group difference in the underlying decision parameters. We model behaviour at the level of latent psychometric parameters and use simulation to explore how sample size and other parameters affect statistical power.</p>
 <section id="task-design" class="level3">
 <h3 class="anchored" data-anchor-id="task-design">Task design</h3>
 <p>We can fix the set of choices offered in the task; I am using in particular a design that has been used in prior studies, which aims to provide a targeted sampling of possible choice pairs (combinations of immediate and delayed rewards) in a way that should encompass a broad range of individual differences in discounting.</p>
@@ -335,13 +335,13 @@ In this example, we define the effect size in terms of variability on the <em>la
  $ trial         : int  1 2 3 4 5 6 7 8 9 10 ...
  $ immediate     : num  10 10 10 10 10 10 10 10 10 10 ...
  $ delayed       : num  11 12 13 14 15 16 17 18 19 20 ...
- $ choose_delayed: int  0 0 0 0 0 0 0 1 1 1 ...
- $ p_delayed     : num  0.108 0.127 0.149 0.174 0.202 ...
+ $ choose_delayed: int  0 0 0 0 0 1 0 0 1 1 ...
+ $ p_delayed     : num  0.0185 0.0262 0.0371 0.0522 0.0731 ...
  $ subjectID     : chr  "CL_1" "CL_1" "CL_1" "CL_1" ...
  $ group         : chr  "CL" "CL" "CL" "CL" ...
- $ pse           : Named num  12.4 12.4 12.4 12.4 12.4 ...
+ $ pse           : Named num  12.1 12.1 12.1 12.1 12.1 ...
   ..- attr(*, "names")= chr [1:1200] "pse" "pse" "pse" "pse" ...
- $ slope         : Named num  0.185 0.185 0.185 0.185 0.185 ...
+ $ slope         : Named num  0.358 0.358 0.358 0.358 0.358 ...
   ..- attr(*, "names")= chr [1:1200] "slope" "slope" "slope" "slope" ...</code></pre>
 </div>
 </div>
@@ -418,8 +418,8 @@ In this example, we define the effect size in terms of variability on the <em>la
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">fit_dd_glmer</span>(<span class="fu">simulate_dd</span>(<span class="at">n_per_group =</span> <span class="dv">20</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>    estimate        se         z         p  N delta_PSE
-1 -0.6336481 0.5755112 -1.101018 0.2708889 40   1.51539</code></pre>
+<pre><code>    estimate        se         z          p  N delta_PSE
+1 -0.9409973 0.4962584 -1.896184 0.05793571 40  3.718074</code></pre>
 </div>
 </div>
 </section>
@@ -1423,9 +1423,9 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb23-34"><a href="#cb23-34" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Slope:**  </span>
 <span id="cb23-35"><a href="#cb23-35" aria-hidden="true" tabindex="-1"></a>  how sharply choices switch from preferring the immediate to the delayed option as the reward difference increases. Shallower slopes indicate noisier or less consistent preferences.</span>
 <span id="cb23-36"><a href="#cb23-36" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-37"><a href="#cb23-37" aria-hidden="true" tabindex="-1"></a>**Why might we want to simulate this task?** Delayed discounting tasks are widely used in clinical and cognitive neuroscience to study impulsivity and reward processing. For example, one possible application is in Parkinson’s disease, where dopaminergic medication (such as L-DOPA or dopamine agonists) has been linked to changes in impulsivity and reward sensitivity. Some studies suggest that dopaminergic treatment can increase impulsive choice in certain patients, although effects can vary across individuals.</span>
+<span id="cb23-37"><a href="#cb23-37" aria-hidden="true" tabindex="-1"></a>Delayed discounting tasks are used to study impulsivity and reward processing. Dopaminergic medication (such as L-DOPA or dopamine agonists) has been linked to changes in impulsivity and reward sensitivity and some studies suggest that dopaminergic treatment can increase impulsive choice in certain patients.</span>
 <span id="cb23-38"><a href="#cb23-38" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-39"><a href="#cb23-39" aria-hidden="true" tabindex="-1"></a>In this example, we simulate two groups (e.g. patients *on* vs *off* medication, or patients vs controls), assuming a small group difference in the underlying decision parameters. Rather than analysing raw choice proportions, we model behaviour at the level of latent psychometric parameters and use simulation to explore how sample size, effect size, and individual variability affect statistical power.</span>
+<span id="cb23-39"><a href="#cb23-39" aria-hidden="true" tabindex="-1"></a>In this example, we simulate two groups (e.g. patients *on* vs *off* medication, or patients vs controls), assuming a small group difference in the underlying decision parameters. We model behaviour at the level of latent psychometric parameters and use simulation to explore how sample size and other parameters affect statistical power.</span>
 <span id="cb23-40"><a href="#cb23-40" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb23-41"><a href="#cb23-41" aria-hidden="true" tabindex="-1"></a><span class="fu">### Task design</span></span>
 <span id="cb23-42"><a href="#cb23-42" aria-hidden="true" tabindex="-1"></a></span>
