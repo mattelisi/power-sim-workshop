@@ -251,13 +251,13 @@ In this example, we define the effect size in terms of variability on the <em>la
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>simulate_dd <span class="ot">&lt;-</span> <span class="cf">function</span>(</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">n_per_group =</span> <span class="dv">30</span>,</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">groups =</span> <span class="fu">c</span>(<span class="st">"CL"</span>, <span class="st">"PD"</span>),</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    <span class="co"># ---- population-level parameters (baseline group) ----</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    <span class="co"># -population-level parameters (baseline group) </span></span>
 <span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">mu_pse   =</span> <span class="fl">12.5</span>,   <span class="co"># mean point of subjective equality (bias)</span></span>
 <span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">mu_slope =</span> <span class="fl">0.3</span>,    <span class="co"># mean slope of psychometric function</span></span>
 <span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">sd_pse   =</span> <span class="fl">3.0</span>,    <span class="co"># between-subject SD of PSE</span></span>
 <span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">sd_slope =</span> <span class="fl">0.1</span>,    <span class="co"># between-subject SD of slope</span></span>
 <span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">rho      =</span> <span class="sc">-</span><span class="fl">0.3</span>,   <span class="co"># correlation between PSE and slope</span></span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>    <span class="co"># ---- group effect (small effect, approx d = 0.2) ----</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>    <span class="co"># -group effect (small effect, approx d = 0.2) </span></span>
 <span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">d_effect =</span> <span class="fl">0.5</span>,    <span class="co"># conceptually similar to Cohen's d</span></span>
 <span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>    </span>
 <span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">seed =</span> <span class="cn">NULL</span></span>
@@ -269,7 +269,7 @@ In this example, we define the effect size in terms of variability on the <em>la
 <span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>  <span class="co"># latent variability (between subject SD + logistic noise)</span></span>
 <span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>  delta <span class="ot">&lt;-</span> d_effect <span class="sc">*</span> <span class="fu">sqrt</span>(sd_pse<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> ((pi<span class="sc">/</span><span class="fu">sqrt</span>(<span class="dv">3</span>))<span class="sc">/</span>mu_slope)<span class="sc">^</span><span class="dv">2</span>)</span>
 <span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>  <span class="co"># ---- covariance matrix for (PSE, slope) ----</span></span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>  <span class="co"># -covariance matrix for (PSE, slope) </span></span>
 <span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>  Sigma <span class="ot">&lt;-</span> <span class="fu">matrix</span>(</span>
 <span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>    <span class="fu">c</span>(sd_pse<span class="sc">^</span><span class="dv">2</span>,</span>
 <span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>      rho <span class="sc">*</span> sd_pse <span class="sc">*</span> sd_slope,</span>
@@ -288,7 +288,7 @@ In this example, we define the effect size in terms of variability on the <em>la
 <span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a>    </span>
 <span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a>    mu_vec <span class="ot">&lt;-</span> <span class="fu">c</span>(mu_pse <span class="sc">+</span> mu_shift_pse, mu_slope)</span>
 <span id="cb3-40"><a href="#cb3-40" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb3-41"><a href="#cb3-41" aria-hidden="true" tabindex="-1"></a>    <span class="co"># ---- sample subject-level parameters ----</span></span>
+<span id="cb3-41"><a href="#cb3-41" aria-hidden="true" tabindex="-1"></a>    <span class="co"># -sample subject-level parameters </span></span>
 <span id="cb3-42"><a href="#cb3-42" aria-hidden="true" tabindex="-1"></a>    theta <span class="ot">&lt;-</span> MASS<span class="sc">::</span><span class="fu">mvrnorm</span>(n_per_group, <span class="at">mu =</span> mu_vec, <span class="at">Sigma =</span> Sigma)</span>
 <span id="cb3-43"><a href="#cb3-43" aria-hidden="true" tabindex="-1"></a>    <span class="fu">colnames</span>(theta) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"pse"</span>, <span class="st">"slope"</span>)</span>
 <span id="cb3-44"><a href="#cb3-44" aria-hidden="true" tabindex="-1"></a>    </span>
@@ -335,13 +335,13 @@ In this example, we define the effect size in terms of variability on the <em>la
  $ trial         : int  1 2 3 4 5 6 7 8 9 10 ...
  $ immediate     : num  10 10 10 10 10 10 10 10 10 10 ...
  $ delayed       : num  11 12 13 14 15 16 17 18 19 20 ...
- $ choose_delayed: int  0 0 0 0 0 1 0 0 1 1 ...
- $ p_delayed     : num  0.0185 0.0262 0.0371 0.0522 0.0731 ...
+ $ choose_delayed: int  0 0 0 1 1 1 0 0 0 1 ...
+ $ p_delayed     : num  0.0625 0.082 0.1068 0.138 0.1766 ...
  $ subjectID     : chr  "CL_1" "CL_1" "CL_1" "CL_1" ...
  $ group         : chr  "CL" "CL" "CL" "CL" ...
- $ pse           : Named num  12.1 12.1 12.1 12.1 12.1 ...
+ $ pse           : Named num  10.3 10.3 10.3 10.3 10.3 ...
   ..- attr(*, "names")= chr [1:1200] "pse" "pse" "pse" "pse" ...
- $ slope         : Named num  0.358 0.358 0.358 0.358 0.358 ...
+ $ slope         : Named num  0.292 0.292 0.292 0.292 0.292 ...
   ..- attr(*, "names")= chr [1:1200] "slope" "slope" "slope" "slope" ...</code></pre>
 </div>
 </div>
@@ -383,7 +383,7 @@ In this example, we define the effect size in terms of variability on the <em>la
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>fit_dd_glmer <span class="ot">&lt;-</span> <span class="cf">function</span>(dat) {</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="co"># --- model: interaction + random slope ---</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="co"># model: interaction + random slope </span></span>
 <span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  dat<span class="sc">$</span>diff <span class="ot">&lt;-</span> dat<span class="sc">$</span>delayed <span class="sc">-</span> dat<span class="sc">$</span>immediate</span>
 <span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  dat<span class="sc">$</span>group <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(dat<span class="sc">$</span>group<span class="sc">==</span><span class="st">"PD"</span>,<span class="dv">1</span>,<span class="dv">0</span>)</span>
 <span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  fit <span class="ot">&lt;-</span>  lme4<span class="sc">::</span><span class="fu">glmer</span>(choose_delayed <span class="sc">~</span> group <span class="sc">*</span> diff <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">+</span> diff <span class="sc">|</span> subjectID),</span>
@@ -391,7 +391,7 @@ In this example, we define the effect size in terms of variability on the <em>la
 <span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>                      <span class="at">family =</span> <span class="fu">binomial</span>(<span class="at">link =</span> <span class="st">"logit"</span>))</span>
 <span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>  </span>
 <span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>  <span class="co"># --- extract Wald tests from model summary (simple &amp; standard) ---</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>  <span class="co"># extract Wald tests from model summary </span></span>
 <span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>  coefs <span class="ot">&lt;-</span> <span class="fu">summary</span>(fit)<span class="sc">$</span>coefficients</span>
 <span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>  out <span class="ot">&lt;-</span> coefs[<span class="fu">rownames</span>(coefs)<span class="sc">==</span><span class="st">"group"</span>,]</span>
 <span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">names</span>(out) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"estimate"</span>, <span class="st">"se"</span>, <span class="st">"z"</span>, <span class="st">"p"</span>)</span>
@@ -418,8 +418,8 @@ In this example, we define the effect size in terms of variability on the <em>la
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">fit_dd_glmer</span>(<span class="fu">simulate_dd</span>(<span class="at">n_per_group =</span> <span class="dv">20</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>    estimate        se         z          p  N delta_PSE
-1 -0.9409973 0.4962584 -1.896184 0.05793571 40  3.718074</code></pre>
+<pre><code>   estimate          se         z p  N delta_PSE
+1 -1.573065 0.000990617 -1587.965 0 40  4.254466</code></pre>
 </div>
 </div>
 </section>
@@ -689,14 +689,14 @@ If <span class="math inline">\(r &gt; 0\)</span>, consecutive observations tend 
 <span id="cb17-25"><a href="#cb17-25" aria-hidden="true" tabindex="-1"></a>){</span>
 <span id="cb17-26"><a href="#cb17-26" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="sc">!</span><span class="fu">is.null</span>(seed)) <span class="fu">set.seed</span>(seed)</span>
 <span id="cb17-27"><a href="#cb17-27" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb17-28"><a href="#cb17-28" aria-hidden="true" tabindex="-1"></a>  <span class="co"># --- Random effects covariance matrix for (u0, u1) ---</span></span>
+<span id="cb17-28"><a href="#cb17-28" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Random effects covariance matrix for (u0, u1)</span></span>
 <span id="cb17-29"><a href="#cb17-29" aria-hidden="true" tabindex="-1"></a>  Sigma_u <span class="ot">&lt;-</span> <span class="fu">matrix</span>(</span>
 <span id="cb17-30"><a href="#cb17-30" aria-hidden="true" tabindex="-1"></a>    <span class="fu">c</span>(tau0<span class="sc">^</span><span class="dv">2</span>,              rho_u <span class="sc">*</span> tau0 <span class="sc">*</span> tau1,</span>
 <span id="cb17-31"><a href="#cb17-31" aria-hidden="true" tabindex="-1"></a>      rho_u <span class="sc">*</span> tau0 <span class="sc">*</span> tau1,        tau1<span class="sc">^</span><span class="dv">2</span>),</span>
 <span id="cb17-32"><a href="#cb17-32" aria-hidden="true" tabindex="-1"></a>    <span class="at">nrow =</span> <span class="dv">2</span>, <span class="at">byrow =</span> <span class="cn">TRUE</span></span>
 <span id="cb17-33"><a href="#cb17-33" aria-hidden="true" tabindex="-1"></a>  )</span>
 <span id="cb17-34"><a href="#cb17-34" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb17-35"><a href="#cb17-35" aria-hidden="true" tabindex="-1"></a>  <span class="co"># --- Balanced panel: each child measured each day ---</span></span>
+<span id="cb17-35"><a href="#cb17-35" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Balanced panel: each child measured each day </span></span>
 <span id="cb17-36"><a href="#cb17-36" aria-hidden="true" tabindex="-1"></a>  df <span class="ot">&lt;-</span> <span class="fu">expand.grid</span>(<span class="at">id =</span> <span class="dv">1</span><span class="sc">:</span>n_child, <span class="at">day =</span> <span class="dv">1</span><span class="sc">:</span>n_days) <span class="sc">%&gt;%</span></span>
 <span id="cb17-37"><a href="#cb17-37" aria-hidden="true" tabindex="-1"></a>    <span class="fu">as_tibble</span>() <span class="sc">%&gt;%</span></span>
 <span id="cb17-38"><a href="#cb17-38" aria-hidden="true" tabindex="-1"></a>    <span class="fu">arrange</span>(id, day) <span class="sc">%&gt;%</span></span>
@@ -705,12 +705,12 @@ If <span class="math inline">\(r &gt; 0\)</span>, consecutive observations tend 
 <span id="cb17-41"><a href="#cb17-41" aria-hidden="true" tabindex="-1"></a>                       <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"Mon"</span>,<span class="st">"Tue"</span>,<span class="st">"Wed"</span>,<span class="st">"Thu"</span>,<span class="st">"Fri"</span>,<span class="st">"Sat"</span>,<span class="st">"Sun"</span>))</span>
 <span id="cb17-42"><a href="#cb17-42" aria-hidden="true" tabindex="-1"></a>    )</span>
 <span id="cb17-43"><a href="#cb17-43" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb17-44"><a href="#cb17-44" aria-hidden="true" tabindex="-1"></a>  <span class="co"># --- Person-level mean of X (between-person differences) ---</span></span>
+<span id="cb17-44"><a href="#cb17-44" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Person-level mean of X (between-person differences) </span></span>
 <span id="cb17-45"><a href="#cb17-45" aria-hidden="true" tabindex="-1"></a>  x_bar <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n_child, <span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> sd_between_x)</span>
 <span id="cb17-46"><a href="#cb17-46" aria-hidden="true" tabindex="-1"></a>  df <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span></span>
 <span id="cb17-47"><a href="#cb17-47" aria-hidden="true" tabindex="-1"></a>    <span class="fu">left_join</span>(<span class="fu">tibble</span>(<span class="at">id =</span> <span class="dv">1</span><span class="sc">:</span>n_child, <span class="at">x_bar =</span> x_bar), <span class="at">by =</span> <span class="st">"id"</span>)</span>
 <span id="cb17-48"><a href="#cb17-48" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb17-49"><a href="#cb17-49" aria-hidden="true" tabindex="-1"></a>  <span class="co"># --- Within-person daily deviations of X with AR(1) structure ---</span></span>
+<span id="cb17-49"><a href="#cb17-49" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Within-person daily deviations of X with AR(1) structure </span></span>
 <span id="cb17-50"><a href="#cb17-50" aria-hidden="true" tabindex="-1"></a>  df <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span></span>
 <span id="cb17-51"><a href="#cb17-51" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>(id) <span class="sc">%&gt;%</span></span>
 <span id="cb17-52"><a href="#cb17-52" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">x_within =</span> <span class="fu">r_ar1</span>(n_days, sd_within_x, rho_x_ar1)) <span class="sc">%&gt;%</span></span>
@@ -720,7 +720,7 @@ If <span class="math inline">\(r &gt; 0\)</span>, consecutive observations tend 
 <span id="cb17-56"><a href="#cb17-56" aria-hidden="true" tabindex="-1"></a>      <span class="at">x_cwc =</span> x <span class="sc">-</span> x_bar</span>
 <span id="cb17-57"><a href="#cb17-57" aria-hidden="true" tabindex="-1"></a>    )</span>
 <span id="cb17-58"><a href="#cb17-58" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb17-59"><a href="#cb17-59" aria-hidden="true" tabindex="-1"></a>  <span class="co"># --- Standardise predictors separately ---</span></span>
+<span id="cb17-59"><a href="#cb17-59" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Standardise predictors separately </span></span>
 <span id="cb17-60"><a href="#cb17-60" aria-hidden="true" tabindex="-1"></a>  <span class="co"># IMPORTANT: beta_w and beta_b are interpreted in SD units of each component (x_cwc and x_bar).</span></span>
 <span id="cb17-61"><a href="#cb17-61" aria-hidden="true" tabindex="-1"></a>  df <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span></span>
 <span id="cb17-62"><a href="#cb17-62" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(</span>
@@ -729,20 +729,20 @@ If <span class="math inline">\(r &gt; 0\)</span>, consecutive observations tend 
 <span id="cb17-65"><a href="#cb17-65" aria-hidden="true" tabindex="-1"></a>      <span class="at">x_cwc =</span> <span class="fu">as.numeric</span>(<span class="fu">scale</span>(x_cwc))</span>
 <span id="cb17-66"><a href="#cb17-66" aria-hidden="true" tabindex="-1"></a>    )</span>
 <span id="cb17-67"><a href="#cb17-67" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb17-68"><a href="#cb17-68" aria-hidden="true" tabindex="-1"></a>  <span class="co"># --- Random effects per child (random intercept + random slope for x_cwc) ---</span></span>
+<span id="cb17-68"><a href="#cb17-68" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Random effects per child (random intercept + random slope for x_cwc)</span></span>
 <span id="cb17-69"><a href="#cb17-69" aria-hidden="true" tabindex="-1"></a>  RE <span class="ot">&lt;-</span> MASS<span class="sc">::</span><span class="fu">mvrnorm</span>(n_child, <span class="at">mu =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>), <span class="at">Sigma =</span> Sigma_u)</span>
 <span id="cb17-70"><a href="#cb17-70" aria-hidden="true" tabindex="-1"></a>  RE <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">id =</span> <span class="dv">1</span><span class="sc">:</span>n_child, <span class="at">u0 =</span> RE[,<span class="dv">1</span>], <span class="at">u1 =</span> RE[,<span class="dv">2</span>])</span>
 <span id="cb17-71"><a href="#cb17-71" aria-hidden="true" tabindex="-1"></a>  df <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span> <span class="fu">left_join</span>(RE, <span class="at">by =</span> <span class="st">"id"</span>)</span>
 <span id="cb17-72"><a href="#cb17-72" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb17-73"><a href="#cb17-73" aria-hidden="true" tabindex="-1"></a>  <span class="co"># --- Day-level residuals e (independent across days) ---</span></span>
+<span id="cb17-73"><a href="#cb17-73" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Day-level residuals e (independent across days) </span></span>
 <span id="cb17-74"><a href="#cb17-74" aria-hidden="true" tabindex="-1"></a>  <span class="co"># This keeps the fitted lmer() model correctly specified w.r.t. residual correlation.</span></span>
 <span id="cb17-75"><a href="#cb17-75" aria-hidden="true" tabindex="-1"></a>  df <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span></span>
 <span id="cb17-76"><a href="#cb17-76" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">e =</span> <span class="fu">rnorm</span>(<span class="fu">nrow</span>(df), <span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> sigma_e))</span>
 <span id="cb17-77"><a href="#cb17-77" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb17-78"><a href="#cb17-78" aria-hidden="true" tabindex="-1"></a>  <span class="co"># --- True weekday effect (set to zero here; weekday_fx just changes the fitted model) ---</span></span>
+<span id="cb17-78"><a href="#cb17-78" aria-hidden="true" tabindex="-1"></a>  <span class="co"># True weekday effect (set to zero here; weekday_fx just changes the fitted model) </span></span>
 <span id="cb17-79"><a href="#cb17-79" aria-hidden="true" tabindex="-1"></a>  df <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">weekday_eff =</span> <span class="dv">0</span>)</span>
 <span id="cb17-80"><a href="#cb17-80" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb17-81"><a href="#cb17-81" aria-hidden="true" tabindex="-1"></a>  <span class="co"># --- Outcome generation ---</span></span>
+<span id="cb17-81"><a href="#cb17-81" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Outcome generation </span></span>
 <span id="cb17-82"><a href="#cb17-82" aria-hidden="true" tabindex="-1"></a>  df <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span></span>
 <span id="cb17-83"><a href="#cb17-83" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(</span>
 <span id="cb17-84"><a href="#cb17-84" aria-hidden="true" tabindex="-1"></a>      <span class="at">y =</span> beta0 <span class="sc">+</span> u0 <span class="sc">+</span></span>
@@ -755,7 +755,7 @@ If <span class="math inline">\(r &gt; 0\)</span>, consecutive observations tend 
 <span id="cb17-91"><a href="#cb17-91" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Optional: standardise outcome</span></span>
 <span id="cb17-92"><a href="#cb17-92" aria-hidden="true" tabindex="-1"></a>  df <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">y =</span> <span class="fu">as.numeric</span>(<span class="fu">scale</span>(y)))</span>
 <span id="cb17-93"><a href="#cb17-93" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb17-94"><a href="#cb17-94" aria-hidden="true" tabindex="-1"></a>  <span class="co"># --- Missingness: day-level MCAR only ---</span></span>
+<span id="cb17-94"><a href="#cb17-94" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Missingness: day-level MCAR only ---</span></span>
 <span id="cb17-95"><a href="#cb17-95" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (mcar_rate <span class="sc">&gt;</span> <span class="dv">0</span>) {</span>
 <span id="cb17-96"><a href="#cb17-96" aria-hidden="true" tabindex="-1"></a>    keep <span class="ot">&lt;-</span> <span class="fu">runif</span>(<span class="fu">nrow</span>(df)) <span class="sc">&gt;=</span> mcar_rate</span>
 <span id="cb17-97"><a href="#cb17-97" aria-hidden="true" tabindex="-1"></a>    df <span class="ot">&lt;-</span> df[keep, ]</span>
@@ -1504,13 +1504,13 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb23-121"><a href="#cb23-121" aria-hidden="true" tabindex="-1"></a>simulate_dd <span class="ot">&lt;-</span> <span class="cf">function</span>(</span>
 <span id="cb23-122"><a href="#cb23-122" aria-hidden="true" tabindex="-1"></a>    <span class="at">n_per_group =</span> <span class="dv">30</span>,</span>
 <span id="cb23-123"><a href="#cb23-123" aria-hidden="true" tabindex="-1"></a>    <span class="at">groups =</span> <span class="fu">c</span>(<span class="st">"CL"</span>, <span class="st">"PD"</span>),</span>
-<span id="cb23-124"><a href="#cb23-124" aria-hidden="true" tabindex="-1"></a>    <span class="co"># ---- population-level parameters (baseline group) ----</span></span>
+<span id="cb23-124"><a href="#cb23-124" aria-hidden="true" tabindex="-1"></a>    <span class="co"># -population-level parameters (baseline group) </span></span>
 <span id="cb23-125"><a href="#cb23-125" aria-hidden="true" tabindex="-1"></a>    <span class="at">mu_pse   =</span> <span class="fl">12.5</span>,   <span class="co"># mean point of subjective equality (bias)</span></span>
 <span id="cb23-126"><a href="#cb23-126" aria-hidden="true" tabindex="-1"></a>    <span class="at">mu_slope =</span> <span class="fl">0.3</span>,    <span class="co"># mean slope of psychometric function</span></span>
 <span id="cb23-127"><a href="#cb23-127" aria-hidden="true" tabindex="-1"></a>    <span class="at">sd_pse   =</span> <span class="fl">3.0</span>,    <span class="co"># between-subject SD of PSE</span></span>
 <span id="cb23-128"><a href="#cb23-128" aria-hidden="true" tabindex="-1"></a>    <span class="at">sd_slope =</span> <span class="fl">0.1</span>,    <span class="co"># between-subject SD of slope</span></span>
 <span id="cb23-129"><a href="#cb23-129" aria-hidden="true" tabindex="-1"></a>    <span class="at">rho      =</span> <span class="sc">-</span><span class="fl">0.3</span>,   <span class="co"># correlation between PSE and slope</span></span>
-<span id="cb23-130"><a href="#cb23-130" aria-hidden="true" tabindex="-1"></a>    <span class="co"># ---- group effect (small effect, approx d = 0.2) ----</span></span>
+<span id="cb23-130"><a href="#cb23-130" aria-hidden="true" tabindex="-1"></a>    <span class="co"># -group effect (small effect, approx d = 0.2) </span></span>
 <span id="cb23-131"><a href="#cb23-131" aria-hidden="true" tabindex="-1"></a>    <span class="at">d_effect =</span> <span class="fl">0.5</span>,    <span class="co"># conceptually similar to Cohen's d</span></span>
 <span id="cb23-132"><a href="#cb23-132" aria-hidden="true" tabindex="-1"></a>    </span>
 <span id="cb23-133"><a href="#cb23-133" aria-hidden="true" tabindex="-1"></a>    <span class="at">seed =</span> <span class="cn">NULL</span></span>
@@ -1522,7 +1522,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb23-139"><a href="#cb23-139" aria-hidden="true" tabindex="-1"></a>  <span class="co"># latent variability (between subject SD + logistic noise)</span></span>
 <span id="cb23-140"><a href="#cb23-140" aria-hidden="true" tabindex="-1"></a>  delta <span class="ot">&lt;-</span> d_effect <span class="sc">*</span> <span class="fu">sqrt</span>(sd_pse<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> ((pi<span class="sc">/</span><span class="fu">sqrt</span>(<span class="dv">3</span>))<span class="sc">/</span>mu_slope)<span class="sc">^</span><span class="dv">2</span>)</span>
 <span id="cb23-141"><a href="#cb23-141" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb23-142"><a href="#cb23-142" aria-hidden="true" tabindex="-1"></a>  <span class="co"># ---- covariance matrix for (PSE, slope) ----</span></span>
+<span id="cb23-142"><a href="#cb23-142" aria-hidden="true" tabindex="-1"></a>  <span class="co"># -covariance matrix for (PSE, slope) </span></span>
 <span id="cb23-143"><a href="#cb23-143" aria-hidden="true" tabindex="-1"></a>  Sigma <span class="ot">&lt;-</span> <span class="fu">matrix</span>(</span>
 <span id="cb23-144"><a href="#cb23-144" aria-hidden="true" tabindex="-1"></a>    <span class="fu">c</span>(sd_pse<span class="sc">^</span><span class="dv">2</span>,</span>
 <span id="cb23-145"><a href="#cb23-145" aria-hidden="true" tabindex="-1"></a>      rho <span class="sc">*</span> sd_pse <span class="sc">*</span> sd_slope,</span>
@@ -1541,7 +1541,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb23-158"><a href="#cb23-158" aria-hidden="true" tabindex="-1"></a>    </span>
 <span id="cb23-159"><a href="#cb23-159" aria-hidden="true" tabindex="-1"></a>    mu_vec <span class="ot">&lt;-</span> <span class="fu">c</span>(mu_pse <span class="sc">+</span> mu_shift_pse, mu_slope)</span>
 <span id="cb23-160"><a href="#cb23-160" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb23-161"><a href="#cb23-161" aria-hidden="true" tabindex="-1"></a>    <span class="co"># ---- sample subject-level parameters ----</span></span>
+<span id="cb23-161"><a href="#cb23-161" aria-hidden="true" tabindex="-1"></a>    <span class="co"># -sample subject-level parameters </span></span>
 <span id="cb23-162"><a href="#cb23-162" aria-hidden="true" tabindex="-1"></a>    theta <span class="ot">&lt;-</span> MASS<span class="sc">::</span><span class="fu">mvrnorm</span>(n_per_group, <span class="at">mu =</span> mu_vec, <span class="at">Sigma =</span> Sigma)</span>
 <span id="cb23-163"><a href="#cb23-163" aria-hidden="true" tabindex="-1"></a>    <span class="fu">colnames</span>(theta) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"pse"</span>, <span class="st">"slope"</span>)</span>
 <span id="cb23-164"><a href="#cb23-164" aria-hidden="true" tabindex="-1"></a>    </span>
@@ -1618,7 +1618,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb23-241"><a href="#cb23-241" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
 <span id="cb23-242"><a href="#cb23-242" aria-hidden="true" tabindex="-1"></a>fit_dd_glmer <span class="ot">&lt;-</span> <span class="cf">function</span>(dat) {</span>
 <span id="cb23-243"><a href="#cb23-243" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb23-244"><a href="#cb23-244" aria-hidden="true" tabindex="-1"></a>  <span class="co"># --- model: interaction + random slope ---</span></span>
+<span id="cb23-244"><a href="#cb23-244" aria-hidden="true" tabindex="-1"></a>  <span class="co"># model: interaction + random slope </span></span>
 <span id="cb23-245"><a href="#cb23-245" aria-hidden="true" tabindex="-1"></a>  dat<span class="sc">$</span>diff <span class="ot">&lt;-</span> dat<span class="sc">$</span>delayed <span class="sc">-</span> dat<span class="sc">$</span>immediate</span>
 <span id="cb23-246"><a href="#cb23-246" aria-hidden="true" tabindex="-1"></a>  dat<span class="sc">$</span>group <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(dat<span class="sc">$</span>group<span class="sc">==</span><span class="st">"PD"</span>,<span class="dv">1</span>,<span class="dv">0</span>)</span>
 <span id="cb23-247"><a href="#cb23-247" aria-hidden="true" tabindex="-1"></a>  fit <span class="ot">&lt;-</span>  lme4<span class="sc">::</span><span class="fu">glmer</span>(choose_delayed <span class="sc">~</span> group <span class="sc">*</span> diff <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">+</span> diff <span class="sc">|</span> subjectID),</span>
@@ -1626,7 +1626,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb23-249"><a href="#cb23-249" aria-hidden="true" tabindex="-1"></a>                      <span class="at">family =</span> <span class="fu">binomial</span>(<span class="at">link =</span> <span class="st">"logit"</span>))</span>
 <span id="cb23-250"><a href="#cb23-250" aria-hidden="true" tabindex="-1"></a>  </span>
 <span id="cb23-251"><a href="#cb23-251" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb23-252"><a href="#cb23-252" aria-hidden="true" tabindex="-1"></a>  <span class="co"># --- extract Wald tests from model summary (simple &amp; standard) ---</span></span>
+<span id="cb23-252"><a href="#cb23-252" aria-hidden="true" tabindex="-1"></a>  <span class="co"># extract Wald tests from model summary </span></span>
 <span id="cb23-253"><a href="#cb23-253" aria-hidden="true" tabindex="-1"></a>  coefs <span class="ot">&lt;-</span> <span class="fu">summary</span>(fit)<span class="sc">$</span>coefficients</span>
 <span id="cb23-254"><a href="#cb23-254" aria-hidden="true" tabindex="-1"></a>  out <span class="ot">&lt;-</span> coefs[<span class="fu">rownames</span>(coefs)<span class="sc">==</span><span class="st">"group"</span>,]</span>
 <span id="cb23-255"><a href="#cb23-255" aria-hidden="true" tabindex="-1"></a>  <span class="fu">names</span>(out) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"estimate"</span>, <span class="st">"se"</span>, <span class="st">"z"</span>, <span class="st">"p"</span>)</span>
@@ -1926,14 +1926,14 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb23-561"><a href="#cb23-561" aria-hidden="true" tabindex="-1"></a>){</span>
 <span id="cb23-562"><a href="#cb23-562" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="sc">!</span><span class="fu">is.null</span>(seed)) <span class="fu">set.seed</span>(seed)</span>
 <span id="cb23-563"><a href="#cb23-563" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb23-564"><a href="#cb23-564" aria-hidden="true" tabindex="-1"></a>  <span class="co"># --- Random effects covariance matrix for (u0, u1) ---</span></span>
+<span id="cb23-564"><a href="#cb23-564" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Random effects covariance matrix for (u0, u1)</span></span>
 <span id="cb23-565"><a href="#cb23-565" aria-hidden="true" tabindex="-1"></a>  Sigma_u <span class="ot">&lt;-</span> <span class="fu">matrix</span>(</span>
 <span id="cb23-566"><a href="#cb23-566" aria-hidden="true" tabindex="-1"></a>    <span class="fu">c</span>(tau0<span class="sc">^</span><span class="dv">2</span>,              rho_u <span class="sc">*</span> tau0 <span class="sc">*</span> tau1,</span>
 <span id="cb23-567"><a href="#cb23-567" aria-hidden="true" tabindex="-1"></a>      rho_u <span class="sc">*</span> tau0 <span class="sc">*</span> tau1,        tau1<span class="sc">^</span><span class="dv">2</span>),</span>
 <span id="cb23-568"><a href="#cb23-568" aria-hidden="true" tabindex="-1"></a>    <span class="at">nrow =</span> <span class="dv">2</span>, <span class="at">byrow =</span> <span class="cn">TRUE</span></span>
 <span id="cb23-569"><a href="#cb23-569" aria-hidden="true" tabindex="-1"></a>  )</span>
 <span id="cb23-570"><a href="#cb23-570" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb23-571"><a href="#cb23-571" aria-hidden="true" tabindex="-1"></a>  <span class="co"># --- Balanced panel: each child measured each day ---</span></span>
+<span id="cb23-571"><a href="#cb23-571" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Balanced panel: each child measured each day </span></span>
 <span id="cb23-572"><a href="#cb23-572" aria-hidden="true" tabindex="-1"></a>  df <span class="ot">&lt;-</span> <span class="fu">expand.grid</span>(<span class="at">id =</span> <span class="dv">1</span><span class="sc">:</span>n_child, <span class="at">day =</span> <span class="dv">1</span><span class="sc">:</span>n_days) <span class="sc">%&gt;%</span></span>
 <span id="cb23-573"><a href="#cb23-573" aria-hidden="true" tabindex="-1"></a>    <span class="fu">as_tibble</span>() <span class="sc">%&gt;%</span></span>
 <span id="cb23-574"><a href="#cb23-574" aria-hidden="true" tabindex="-1"></a>    <span class="fu">arrange</span>(id, day) <span class="sc">%&gt;%</span></span>
@@ -1942,12 +1942,12 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb23-577"><a href="#cb23-577" aria-hidden="true" tabindex="-1"></a>                       <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"Mon"</span>,<span class="st">"Tue"</span>,<span class="st">"Wed"</span>,<span class="st">"Thu"</span>,<span class="st">"Fri"</span>,<span class="st">"Sat"</span>,<span class="st">"Sun"</span>))</span>
 <span id="cb23-578"><a href="#cb23-578" aria-hidden="true" tabindex="-1"></a>    )</span>
 <span id="cb23-579"><a href="#cb23-579" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb23-580"><a href="#cb23-580" aria-hidden="true" tabindex="-1"></a>  <span class="co"># --- Person-level mean of X (between-person differences) ---</span></span>
+<span id="cb23-580"><a href="#cb23-580" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Person-level mean of X (between-person differences) </span></span>
 <span id="cb23-581"><a href="#cb23-581" aria-hidden="true" tabindex="-1"></a>  x_bar <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n_child, <span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> sd_between_x)</span>
 <span id="cb23-582"><a href="#cb23-582" aria-hidden="true" tabindex="-1"></a>  df <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span></span>
 <span id="cb23-583"><a href="#cb23-583" aria-hidden="true" tabindex="-1"></a>    <span class="fu">left_join</span>(<span class="fu">tibble</span>(<span class="at">id =</span> <span class="dv">1</span><span class="sc">:</span>n_child, <span class="at">x_bar =</span> x_bar), <span class="at">by =</span> <span class="st">"id"</span>)</span>
 <span id="cb23-584"><a href="#cb23-584" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb23-585"><a href="#cb23-585" aria-hidden="true" tabindex="-1"></a>  <span class="co"># --- Within-person daily deviations of X with AR(1) structure ---</span></span>
+<span id="cb23-585"><a href="#cb23-585" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Within-person daily deviations of X with AR(1) structure </span></span>
 <span id="cb23-586"><a href="#cb23-586" aria-hidden="true" tabindex="-1"></a>  df <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span></span>
 <span id="cb23-587"><a href="#cb23-587" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>(id) <span class="sc">%&gt;%</span></span>
 <span id="cb23-588"><a href="#cb23-588" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">x_within =</span> <span class="fu">r_ar1</span>(n_days, sd_within_x, rho_x_ar1)) <span class="sc">%&gt;%</span></span>
@@ -1957,7 +1957,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb23-592"><a href="#cb23-592" aria-hidden="true" tabindex="-1"></a>      <span class="at">x_cwc =</span> x <span class="sc">-</span> x_bar</span>
 <span id="cb23-593"><a href="#cb23-593" aria-hidden="true" tabindex="-1"></a>    )</span>
 <span id="cb23-594"><a href="#cb23-594" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb23-595"><a href="#cb23-595" aria-hidden="true" tabindex="-1"></a>  <span class="co"># --- Standardise predictors separately ---</span></span>
+<span id="cb23-595"><a href="#cb23-595" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Standardise predictors separately </span></span>
 <span id="cb23-596"><a href="#cb23-596" aria-hidden="true" tabindex="-1"></a>  <span class="co"># IMPORTANT: beta_w and beta_b are interpreted in SD units of each component (x_cwc and x_bar).</span></span>
 <span id="cb23-597"><a href="#cb23-597" aria-hidden="true" tabindex="-1"></a>  df <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span></span>
 <span id="cb23-598"><a href="#cb23-598" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(</span>
@@ -1966,20 +1966,20 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb23-601"><a href="#cb23-601" aria-hidden="true" tabindex="-1"></a>      <span class="at">x_cwc =</span> <span class="fu">as.numeric</span>(<span class="fu">scale</span>(x_cwc))</span>
 <span id="cb23-602"><a href="#cb23-602" aria-hidden="true" tabindex="-1"></a>    )</span>
 <span id="cb23-603"><a href="#cb23-603" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb23-604"><a href="#cb23-604" aria-hidden="true" tabindex="-1"></a>  <span class="co"># --- Random effects per child (random intercept + random slope for x_cwc) ---</span></span>
+<span id="cb23-604"><a href="#cb23-604" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Random effects per child (random intercept + random slope for x_cwc)</span></span>
 <span id="cb23-605"><a href="#cb23-605" aria-hidden="true" tabindex="-1"></a>  RE <span class="ot">&lt;-</span> MASS<span class="sc">::</span><span class="fu">mvrnorm</span>(n_child, <span class="at">mu =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>), <span class="at">Sigma =</span> Sigma_u)</span>
 <span id="cb23-606"><a href="#cb23-606" aria-hidden="true" tabindex="-1"></a>  RE <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">id =</span> <span class="dv">1</span><span class="sc">:</span>n_child, <span class="at">u0 =</span> RE[,<span class="dv">1</span>], <span class="at">u1 =</span> RE[,<span class="dv">2</span>])</span>
 <span id="cb23-607"><a href="#cb23-607" aria-hidden="true" tabindex="-1"></a>  df <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span> <span class="fu">left_join</span>(RE, <span class="at">by =</span> <span class="st">"id"</span>)</span>
 <span id="cb23-608"><a href="#cb23-608" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb23-609"><a href="#cb23-609" aria-hidden="true" tabindex="-1"></a>  <span class="co"># --- Day-level residuals e (independent across days) ---</span></span>
+<span id="cb23-609"><a href="#cb23-609" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Day-level residuals e (independent across days) </span></span>
 <span id="cb23-610"><a href="#cb23-610" aria-hidden="true" tabindex="-1"></a>  <span class="co"># This keeps the fitted lmer() model correctly specified w.r.t. residual correlation.</span></span>
 <span id="cb23-611"><a href="#cb23-611" aria-hidden="true" tabindex="-1"></a>  df <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span></span>
 <span id="cb23-612"><a href="#cb23-612" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">e =</span> <span class="fu">rnorm</span>(<span class="fu">nrow</span>(df), <span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> sigma_e))</span>
 <span id="cb23-613"><a href="#cb23-613" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb23-614"><a href="#cb23-614" aria-hidden="true" tabindex="-1"></a>  <span class="co"># --- True weekday effect (set to zero here; weekday_fx just changes the fitted model) ---</span></span>
+<span id="cb23-614"><a href="#cb23-614" aria-hidden="true" tabindex="-1"></a>  <span class="co"># True weekday effect (set to zero here; weekday_fx just changes the fitted model) </span></span>
 <span id="cb23-615"><a href="#cb23-615" aria-hidden="true" tabindex="-1"></a>  df <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">weekday_eff =</span> <span class="dv">0</span>)</span>
 <span id="cb23-616"><a href="#cb23-616" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb23-617"><a href="#cb23-617" aria-hidden="true" tabindex="-1"></a>  <span class="co"># --- Outcome generation ---</span></span>
+<span id="cb23-617"><a href="#cb23-617" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Outcome generation </span></span>
 <span id="cb23-618"><a href="#cb23-618" aria-hidden="true" tabindex="-1"></a>  df <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span></span>
 <span id="cb23-619"><a href="#cb23-619" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(</span>
 <span id="cb23-620"><a href="#cb23-620" aria-hidden="true" tabindex="-1"></a>      <span class="at">y =</span> beta0 <span class="sc">+</span> u0 <span class="sc">+</span></span>
@@ -1992,7 +1992,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb23-627"><a href="#cb23-627" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Optional: standardise outcome</span></span>
 <span id="cb23-628"><a href="#cb23-628" aria-hidden="true" tabindex="-1"></a>  df <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">y =</span> <span class="fu">as.numeric</span>(<span class="fu">scale</span>(y)))</span>
 <span id="cb23-629"><a href="#cb23-629" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb23-630"><a href="#cb23-630" aria-hidden="true" tabindex="-1"></a>  <span class="co"># --- Missingness: day-level MCAR only ---</span></span>
+<span id="cb23-630"><a href="#cb23-630" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Missingness: day-level MCAR only ---</span></span>
 <span id="cb23-631"><a href="#cb23-631" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (mcar_rate <span class="sc">&gt;</span> <span class="dv">0</span>) {</span>
 <span id="cb23-632"><a href="#cb23-632" aria-hidden="true" tabindex="-1"></a>    keep <span class="ot">&lt;-</span> <span class="fu">runif</span>(<span class="fu">nrow</span>(df)) <span class="sc">&gt;=</span> mcar_rate</span>
 <span id="cb23-633"><a href="#cb23-633" aria-hidden="true" tabindex="-1"></a>    df <span class="ot">&lt;-</span> df[keep, ]</span>

@@ -115,13 +115,13 @@ Here is the function used to simulate the data. A few things to notice here:
 simulate_dd <- function(
     n_per_group = 30,
     groups = c("CL", "PD"),
-    # ---- population-level parameters (baseline group) ----
+    # -population-level parameters (baseline group) 
     mu_pse   = 12.5,   # mean point of subjective equality (bias)
     mu_slope = 0.3,    # mean slope of psychometric function
     sd_pse   = 3.0,    # between-subject SD of PSE
     sd_slope = 0.1,    # between-subject SD of slope
     rho      = -0.3,   # correlation between PSE and slope
-    # ---- group effect (small effect, approx d = 0.2) ----
+    # -group effect (small effect, approx d = 0.2) 
     d_effect = 0.5,    # conceptually similar to Cohen's d
     
     seed = NULL
@@ -133,7 +133,7 @@ simulate_dd <- function(
   # latent variability (between subject SD + logistic noise)
   delta <- d_effect * sqrt(sd_pse^2 + ((pi/sqrt(3))/mu_slope)^2)
   
-  # ---- covariance matrix for (PSE, slope) ----
+  # -covariance matrix for (PSE, slope) 
   Sigma <- matrix(
     c(sd_pse^2,
       rho * sd_pse * sd_slope,
@@ -152,7 +152,7 @@ simulate_dd <- function(
     
     mu_vec <- c(mu_pse + mu_shift_pse, mu_slope)
     
-    # ---- sample subject-level parameters ----
+    # -sample subject-level parameters 
     theta <- MASS::mvrnorm(n_per_group, mu = mu_vec, Sigma = Sigma)
     colnames(theta) <- c("pse", "slope")
     
@@ -229,7 +229,7 @@ We can wrap the model-fitting code in a custom function for convenience
 ```{r}
 fit_dd_glmer <- function(dat) {
   
-  # --- model: interaction + random slope ---
+  # model: interaction + random slope 
   dat$diff <- dat$delayed - dat$immediate
   dat$group <- ifelse(dat$group=="PD",1,0)
   fit <-  lme4::glmer(choose_delayed ~ group * diff + (1 + diff | subjectID),
@@ -237,7 +237,7 @@ fit_dd_glmer <- function(dat) {
                       family = binomial(link = "logit"))
   
   
-  # --- extract Wald tests from model summary (simple & standard) ---
+  # extract Wald tests from model summary 
   coefs <- summary(fit)$coefficients
   out <- coefs[rownames(coefs)=="group",]
   names(out) <- c("estimate", "se", "z", "p")
@@ -537,14 +537,14 @@ sim_diary <- function(
 ){
   if (!is.null(seed)) set.seed(seed)
   
-  # --- Random effects covariance matrix for (u0, u1) ---
+  # Random effects covariance matrix for (u0, u1)
   Sigma_u <- matrix(
     c(tau0^2,              rho_u * tau0 * tau1,
       rho_u * tau0 * tau1,        tau1^2),
     nrow = 2, byrow = TRUE
   )
   
-  # --- Balanced panel: each child measured each day ---
+  # Balanced panel: each child measured each day 
   df <- expand.grid(id = 1:n_child, day = 1:n_days) %>%
     as_tibble() %>%
     arrange(id, day) %>%
@@ -553,12 +553,12 @@ sim_diary <- function(
                        labels = c("Mon","Tue","Wed","Thu","Fri","Sat","Sun"))
     )
   
-  # --- Person-level mean of X (between-person differences) ---
+  # Person-level mean of X (between-person differences) 
   x_bar <- rnorm(n_child, mean = 0, sd = sd_between_x)
   df <- df %>%
     left_join(tibble(id = 1:n_child, x_bar = x_bar), by = "id")
   
-  # --- Within-person daily deviations of X with AR(1) structure ---
+  # Within-person daily deviations of X with AR(1) structure 
   df <- df %>%
     group_by(id) %>%
     mutate(x_within = r_ar1(n_days, sd_within_x, rho_x_ar1)) %>%
@@ -568,7 +568,7 @@ sim_diary <- function(
       x_cwc = x - x_bar
     )
   
-  # --- Standardise predictors separately ---
+  # Standardise predictors separately 
   # IMPORTANT: beta_w and beta_b are interpreted in SD units of each component (x_cwc and x_bar).
   df <- df %>%
     mutate(
@@ -577,20 +577,20 @@ sim_diary <- function(
       x_cwc = as.numeric(scale(x_cwc))
     )
   
-  # --- Random effects per child (random intercept + random slope for x_cwc) ---
+  # Random effects per child (random intercept + random slope for x_cwc)
   RE <- MASS::mvrnorm(n_child, mu = c(0, 0), Sigma = Sigma_u)
   RE <- tibble(id = 1:n_child, u0 = RE[,1], u1 = RE[,2])
   df <- df %>% left_join(RE, by = "id")
   
-  # --- Day-level residuals e (independent across days) ---
+  # Day-level residuals e (independent across days) 
   # This keeps the fitted lmer() model correctly specified w.r.t. residual correlation.
   df <- df %>%
     mutate(e = rnorm(nrow(df), mean = 0, sd = sigma_e))
   
-  # --- True weekday effect (set to zero here; weekday_fx just changes the fitted model) ---
+  # True weekday effect (set to zero here; weekday_fx just changes the fitted model) 
   df <- df %>% mutate(weekday_eff = 0)
   
-  # --- Outcome generation ---
+  # Outcome generation 
   df <- df %>%
     mutate(
       y = beta0 + u0 +
@@ -603,7 +603,7 @@ sim_diary <- function(
   # Optional: standardise outcome
   df <- df %>% mutate(y = as.numeric(scale(y)))
   
-  # --- Missingness: day-level MCAR only ---
+  # Missingness: day-level MCAR only ---
   if (mcar_rate > 0) {
     keep <- runif(nrow(df)) >= mcar_rate
     df <- df[keep, ]
